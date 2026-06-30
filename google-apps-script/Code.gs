@@ -35,6 +35,22 @@ function doPost(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function testLead() {
+  const sheet = getLeadSheet();
+
+  sheet.appendRow([
+    new Date().toISOString(),
+    "Test TRADINVERSO",
+    "test@tradinverso.com",
+    "checklist-entrada-mercado",
+    "test-apps-script",
+    "test-manual",
+    "si",
+    "nuevo",
+    "Fila de prueba creada desde Apps Script"
+  ]);
+}
+
 function doGet() {
   setupSpreadsheet();
 

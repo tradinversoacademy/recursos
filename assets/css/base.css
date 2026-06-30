@@ -1,15 +1,16 @@
 :root {
-  --ink: #151515;
-  --muted: #66645f;
-  --paper: #fbfaf6;
+  --ink: #06152e;
+  --muted: #566578;
+  --paper: #f5f9ff;
   --panel: #ffffff;
-  --line: #ded9ce;
-  --gold: #c99a39;
-  --green: #23745a;
-  --red: #b94c43;
-  --blue: #315f8c;
-  --charcoal: #202733;
-  --shadow: 0 22px 55px rgba(25, 25, 25, 0.14);
+  --line: #d9e6fb;
+  --navy: #06245c;
+  --navy-2: #03173b;
+  --blue: #2d89ff;
+  --sky: #5db2ff;
+  --ice: #eaf4ff;
+  --red: #c84d5c;
+  --shadow: 0 24px 60px rgba(6, 36, 92, 0.16);
 }
 
 * {
@@ -24,7 +25,8 @@ body {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
-  background: var(--paper);
+  background:
+    linear-gradient(180deg, #ffffff 0%, var(--paper) 48%, #edf6ff 100%);
 }
 
 a {
@@ -58,6 +60,12 @@ input {
   font-weight: 800;
 }
 
+.brand-logo {
+  display: block;
+  width: clamp(150px, 18vw, 220px);
+  height: auto;
+}
+
 .brand-mark {
   display: grid;
   place-items: center;
@@ -66,8 +74,8 @@ input {
   flex: 0 0 42px;
   border-radius: 8px;
   color: #fff;
-  background: linear-gradient(135deg, var(--charcoal), var(--green));
-  box-shadow: 0 12px 25px rgba(32, 39, 51, 0.22);
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  box-shadow: 0 12px 25px rgba(6, 36, 92, 0.22);
 }
 
 .brand small {
@@ -83,7 +91,7 @@ input {
   padding: 9px 14px;
   color: var(--muted);
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .hero {
@@ -101,11 +109,11 @@ input {
   align-items: center;
   gap: 8px;
   width: fit-content;
-  border: 1px solid rgba(35, 116, 90, 0.24);
+  border: 1px solid rgba(45, 137, 255, 0.28);
   border-radius: 999px;
   padding: 8px 12px;
-  color: var(--green);
-  background: rgba(35, 116, 90, 0.08);
+  color: var(--navy);
+  background: rgba(45, 137, 255, 0.1);
   font-weight: 760;
 }
 
@@ -122,7 +130,7 @@ input {
 .resource-hero p {
   max-width: 680px;
   margin: 0;
-  color: #45433e;
+  color: #34445e;
   font-size: clamp(18px, 2.4vw, 23px);
   line-height: 1.45;
 }
@@ -140,7 +148,7 @@ input {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .point strong {
@@ -161,6 +169,18 @@ input {
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
+}
+
+.lead-panel.featured {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 247, 255, 0.98));
+}
+
+.panel-logo {
+  display: block;
+  width: min(260px, 100%);
+  height: auto;
+  margin: 0 auto 18px;
 }
 
 .lead-panel {
@@ -202,8 +222,8 @@ input {
 }
 
 .field input:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 4px rgba(35, 116, 90, 0.12);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(45, 137, 255, 0.14);
 }
 
 .consent {
@@ -219,7 +239,7 @@ input {
   width: 18px;
   height: 18px;
   margin: 2px 0 0;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 
 .button-row {
@@ -247,11 +267,12 @@ input {
 
 .primary-button {
   color: #fff;
-  background: var(--green);
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  box-shadow: 0 14px 28px rgba(45, 137, 255, 0.22);
 }
 
 .primary-button:hover {
-  background: #1d634d;
+  background: linear-gradient(135deg, var(--navy-2), #1b73e8);
 }
 
 .secondary-button {
@@ -269,7 +290,7 @@ input {
 .form-status {
   min-height: 22px;
   margin-top: 12px;
-  color: var(--green);
+  color: var(--blue);
   font-weight: 700;
 }
 
@@ -277,9 +298,14 @@ input {
   overflow: hidden;
   min-height: 520px;
   background:
-    linear-gradient(135deg, rgba(32, 39, 51, 0.96), rgba(23, 47, 49, 0.94)),
-    radial-gradient(circle at 20% 10%, rgba(201, 154, 57, 0.34), transparent 34%);
+    linear-gradient(135deg, rgba(3, 23, 59, 0.98), rgba(6, 36, 92, 0.96)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 18px);
   color: #fff;
+}
+
+.visual-logo {
+  width: 170px;
+  height: auto;
 }
 
 .visual-head {
@@ -299,8 +325,8 @@ input {
   width: 12px;
   height: 12px;
   border-radius: 99px;
-  background: var(--gold);
-  box-shadow: 0 0 0 7px rgba(201, 154, 57, 0.16);
+  background: var(--sky);
+  box-shadow: 0 0 0 7px rgba(93, 178, 255, 0.18);
 }
 
 .chart-board {
@@ -324,7 +350,8 @@ input {
   width: 100%;
   min-width: 7px;
   border-radius: 4px;
-  background: var(--green);
+  background: var(--sky);
+  box-shadow: 0 0 18px rgba(93, 178, 255, 0.2);
 }
 
 .candle::before {
@@ -339,7 +366,7 @@ input {
 }
 
 .candle.down {
-  background: var(--red);
+  background: #89bdf7;
 }
 
 .ticker-grid {
@@ -352,7 +379,7 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 8px;
   padding: 13px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .ticker span {
@@ -417,7 +444,7 @@ input {
   width: 20px;
   height: 20px;
   margin-top: 2px;
-  accent-color: var(--green);
+  accent-color: var(--blue);
 }
 
 .check-item strong {
@@ -443,7 +470,7 @@ input {
   height: 144px;
   margin: 6px auto 18px;
   border-radius: 50%;
-  background: conic-gradient(var(--green) var(--progress, 0deg), #ece6da 0);
+  background: conic-gradient(var(--blue) var(--progress, 0deg), var(--ice) 0);
 }
 
 .progress-ring span {
@@ -474,7 +501,7 @@ input {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 15px;
-  background: #f5f1e8;
+  background: var(--ice);
 }
 
 .decision-box strong {
