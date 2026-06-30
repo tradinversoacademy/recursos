@@ -161,6 +161,47 @@ input {
   line-height: 1.35;
 }
 
+.resource-library,
+.content-band {
+  width: min(1160px, calc(100% - 32px));
+  margin: 0 auto 54px;
+}
+
+.resource-library,
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.content-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.resource-card,
+.video-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.resource-card {
+  padding: 22px;
+}
+
+.resource-card h2 {
+  margin: 16px 0 10px;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.05;
+}
+
+.resource-card p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .lead-panel,
 .market-visual,
 .checklist-panel,
@@ -394,6 +435,78 @@ input {
   font-size: 20px;
 }
 
+.orb-preview {
+  position: relative;
+  min-height: 250px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  background:
+    linear-gradient(90deg, transparent 0 19%, rgba(93, 178, 255, 0.1) 19% 45%, transparent 45%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 58px);
+  overflow: hidden;
+}
+
+.orb-range {
+  position: absolute;
+  left: 18%;
+  top: 74px;
+  width: 28%;
+  height: 96px;
+  border: 1px solid rgba(93, 178, 255, 0.95);
+  background: rgba(93, 178, 255, 0.13);
+}
+
+.orb-line {
+  position: absolute;
+  left: 10%;
+  right: 8%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.orb-line.top {
+  top: 74px;
+}
+
+.orb-line.bottom {
+  top: 170px;
+}
+
+.orb-breakout {
+  position: absolute;
+  left: 45%;
+  top: 72px;
+  width: 44%;
+  height: 96px;
+  border-left: 7px solid var(--sky);
+  border-bottom: 7px solid var(--sky);
+  transform: skewX(-18deg) translateY(-34px);
+  filter: drop-shadow(0 0 16px rgba(93, 178, 255, 0.36));
+}
+
+.video-resource {
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+.video-panel {
+  overflow: hidden;
+}
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--navy-2);
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .resource-hero {
   width: min(1160px, calc(100% - 32px));
   margin: 16px auto 0;
@@ -516,7 +629,9 @@ input {
 
 @media (max-width: 880px) {
   .hero,
-  .resource-grid {
+  .resource-grid,
+  .resource-library,
+  .content-grid {
     grid-template-columns: 1fr;
   }
 
