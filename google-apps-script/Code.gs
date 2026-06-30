@@ -15,20 +15,8 @@ const HEADERS = [
 const STATUS_VALUES = ["nuevo", "contactado", "interesado", "descartado", "alumno"];
 
 function doPost(e) {
-  const sheet = getLeadSheet();
   const body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
-
-  sheet.appendRow([
-    body.fecha || new Date().toISOString(),
-    body.nombre || "",
-    body.email || "",
-    body.recurso || "",
-    body.origen || "",
-    body.campana || "",
-    body.consentimiento || "",
-    body.estado || "nuevo",
-    body.notas || ""
-  ]);
+  appendLead(body);
 
   return ContentService
     .createTextOutput(JSON.stringify({ ok: true }))
@@ -51,12 +39,47 @@ function testLead() {
   ]);
 }
 
-function doGet() {
+function doGet(e) {
+  const params = (e && e.parameter) || {};
+
+  if (params.email || params.nombre) {
+    appendLead(params);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: true }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   setupSpreadsheet();
 
   return ContentService
     .createTextOutput("TRADINVERSO leads activo")
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+function appendLead(body) {
+  const sheet = getLeadSheet();
+
+  sheet.appendRow([
+    parseLeadDate(body.fecha),
+    body.nombre || "",
+    body.email || "",
+    body.recurso || "",
+    body.origen || "",
+    body.campana || body.campaña || "",
+    body.consentimiento || "",
+    body.estado || "nuevo",
+    body.notas || ""
+  ]);
+}
+
+function parseLeadDate(value) {
+  if (!value) {
+    return new Date();
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
 }
 
 function getLeadSheet() {

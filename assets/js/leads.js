@@ -17,19 +17,36 @@
     localStorage.setItem(key, JSON.stringify(previous.slice(-50)));
   }
 
+  function buildLeadUrl(payload) {
+    const params = new URLSearchParams();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      params.set(key, String(value || ""));
+    });
+
+    params.set("_cache", String(Date.now()));
+    return endpoint + (endpoint.includes("?") ? "&" : "?") + params.toString();
+  }
+
   async function sendLead(payload) {
     if (!endpointReady) {
       saveDemoLead(payload);
       return { demo: true };
     }
 
-    await fetch(endpoint, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
+    await new Promise((resolve) => {
+      const image = new Image();
+      const timeout = window.setTimeout(resolve, 1600);
+
+      image.onload = () => {
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      image.onerror = () => {
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      image.src = buildLeadUrl(payload);
     });
 
     return { demo: false };
