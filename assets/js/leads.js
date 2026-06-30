@@ -1,0 +1,147 @@
+(function () {
+  const endpoint = window.TRADINVERSO_LEADS_ENDPOINT || "";
+  const endpointReady = endpoint && !endpoint.includes("PON_AQUI");
+
+  function getParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      origen: params.get("origen") || params.get("utm_source") || "organico",
+      campana: params.get("campana") || params.get("utm_campaign") || "sin-campana"
+    };
+  }
+
+  function saveDemoLead(payload) {
+    const key = "tradinverso_demo_leads";
+    const previous = JSON.parse(localStorage.getItem(key) || "[]");
+    previous.push(payload);
+    localStorage.setItem(key, JSON.stringify(previous.slice(-50)));
+  }
+
+  async function sendLead(payload) {
+    if (!endpointReady) {
+      saveDemoLead(payload);
+      return { demo: true };
+    }
+
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    return { demo: false };
+  }
+
+  function initLeadForms() {
+    const params = getParams();
+
+    document.querySelectorAll("[data-lead-form]").forEach((form) => {
+      const status = form.querySelector("[data-form-status]");
+      const origenInput = form.querySelector('[name="origen"]');
+      const campanaInput = form.querySelector('[name="campana"]');
+
+      if (origenInput) origenInput.value = params.origen;
+      if (campanaInput) campanaInput.value = params.campana;
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const data = new FormData(form);
+        const redirect = form.dataset.redirect || "recurso.html";
+        const payload = {
+          fecha: new Date().toISOString(),
+          nombre: String(data.get("nombre") || "").trim(),
+          email: String(data.get("email") || "").trim(),
+          recurso: form.dataset.recurso || "recurso-sin-nombre",
+          origen: String(data.get("origen") || params.origen),
+          campana: String(data.get("campana") || params.campana),
+          consentimiento: data.get("consentimiento") ? "si" : "no",
+          estado: "nuevo",
+          notas: ""
+        };
+
+        if (!payload.nombre || !payload.email || payload.consentimiento !== "si") {
+          if (status) status.textContent = "Revisa nombre, email y consentimiento.";
+          return;
+        }
+
+        if (submitButton) submitButton.disabled = true;
+        if (status) status.textContent = "Preparando el recurso...";
+
+        try {
+          const result = await sendLead(payload);
+          if (status) {
+            status.textContent = result.demo
+              ? "Modo prueba activo. Abriendo el recurso..."
+              : "Datos guardados. Abriendo el recurso...";
+          }
+          window.setTimeout(() => {
+            window.location.href = redirect;
+          }, 650);
+        } catch (error) {
+          if (status) status.textContent = "No se ha podido guardar. Inténtalo otra vez.";
+          if (submitButton) submitButton.disabled = false;
+        }
+      });
+    });
+  }
+
+  function initChecklist() {
+    const checklist = document.querySelector("[data-checklist]");
+    if (!checklist) return;
+
+    const checks = Array.from(checklist.querySelectorAll('input[type="checkbox"]'));
+    const percent = document.querySelector("[data-progress-percent]");
+    const ring = document.querySelector("[data-progress-ring]");
+    const decision = document.querySelector("[data-decision]");
+    const reset = document.querySelector("[data-reset-checklist]");
+    const storageKey = checklist.dataset.storageKey || "tradinverso_checklist";
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+    checks.forEach((check) => {
+      check.checked = Boolean(saved[check.id]);
+      check.addEventListener("change", update);
+    });
+
+    if (reset) {
+      reset.addEventListener("click", () => {
+        checks.forEach((check) => {
+          check.checked = false;
+        });
+        update();
+      });
+    }
+
+    function update() {
+      const done = checks.filter((check) => check.checked).length;
+      const value = checks.length ? Math.round((done / checks.length) * 100) : 0;
+      const nextSaved = {};
+
+      checks.forEach((check) => {
+        nextSaved[check.id] = check.checked;
+      });
+
+      localStorage.setItem(storageKey, JSON.stringify(nextSaved));
+      if (percent) percent.textContent = value + "%";
+      if (ring) ring.style.setProperty("--progress", Math.round(value * 3.6) + "deg");
+      if (decision) {
+        decision.textContent = value >= 85
+          ? "Entrada validada. Si el precio confirma, la operación tiene plan."
+          : value >= 60
+            ? "Faltan filtros importantes. Espera confirmación o reduce exposición."
+            : "No hay suficiente calidad. La mejor operación puede ser no entrar.";
+      }
+    }
+
+    update();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initLeadForms();
+    initChecklist();
+  });
+})();

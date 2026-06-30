@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checklist interactivo antes de entrar al mercado | TRADINVERSO</title>
+    <meta name="description" content="Checklist interactivo para validar entradas de trading.">
+    <link rel="stylesheet" href="../../assets/css/base.css">
+  </head>
+  <body>
+    <main class="site-shell">
+      <header class="topbar">
+        <div class="brand" aria-label="DavidRoser.fx y TRADINVERSO">
+          <div class="brand-mark">DR</div>
+          <div>
+            DavidRoser.fx
+            <small>TRADINVERSO</small>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="secondary-button" type="button" onclick="window.print()">Imprimir / PDF</button>
+          <a class="nav-pill" href="index.html">Landing</a>
+        </div>
+      </header>
+
+      <section class="resource-hero">
+        <div class="eyebrow">Checklist operativo</div>
+        <h1>Antes de entrar al mercado</h1>
+        <p>Marca solo lo que esté objetivamente cumplido. Si dudas en una casilla, esa casilla todavía no está lista.</p>
+      </section>
+
+      <section class="resource-grid">
+        <div class="checklist-panel" data-checklist data-storage-key="checklist-entrada-mercado">
+          <section class="checklist-section">
+            <h2>1. Contexto del mercado</h2>
+            <label class="check-item" for="ctx-tendencia">
+              <input id="ctx-tendencia" type="checkbox">
+              <span><strong>La tendencia principal está clara.</strong><span>No estoy forzando una dirección porque quiero operar.</span></span>
+            </label>
+            <label class="check-item" for="ctx-zona">
+              <input id="ctx-zona" type="checkbox">
+              <span><strong>El precio está en una zona relevante.</strong><span>Soporte, resistencia, liquidez, apertura, rango o nivel trabajado.</span></span>
+            </label>
+            <label class="check-item" for="ctx-volatilidad">
+              <input id="ctx-volatilidad" type="checkbox">
+              <span><strong>La volatilidad encaja con mi plan.</strong><span>No entro justo cuando el movimiento ya se ha escapado.</span></span>
+            </label>
+          </section>
+
+          <section class="checklist-section">
+            <h2>2. Señal de entrada</h2>
+            <label class="check-item" for="entry-confirmacion">
+              <input id="entry-confirmacion" type="checkbox">
+              <span><strong>Tengo confirmación, no solo intuición.</strong><span>La vela, ruptura, rechazo o patrón ya existe en el gráfico.</span></span>
+            </label>
+            <label class="check-item" for="entry-invalidation">
+              <input id="entry-invalidation" type="checkbox">
+              <span><strong>Sé exactamente dónde la idea deja de tener sentido.</strong><span>El stop no está puesto por comodidad, sino por estructura.</span></span>
+            </label>
+            <label class="check-item" for="entry-no-fomo">
+              <input id="entry-no-fomo" type="checkbox">
+              <span><strong>No estoy entrando por miedo a perderme el movimiento.</strong><span>Si la entrada llega tarde, la operación se descarta.</span></span>
+            </label>
+          </section>
+
+          <section class="checklist-section">
+            <h2>3. Gestión del riesgo</h2>
+            <label class="check-item" for="risk-size">
+              <input id="risk-size" type="checkbox">
+              <span><strong>El tamaño de posición está calculado.</strong><span>La pérdida máxima está decidida antes de hacer clic.</span></span>
+            </label>
+            <label class="check-item" for="risk-rr">
+              <input id="risk-rr" type="checkbox">
+              <span><strong>La relación beneficio/riesgo merece la operación.</strong><span>El objetivo no depende de una esperanza poco realista.</span></span>
+            </label>
+            <label class="check-item" for="risk-news">
+              <input id="risk-news" type="checkbox">
+              <span><strong>He revisado eventos y noticias relevantes.</strong><span>No me expongo sin saber si hay datos importantes cerca.</span></span>
+            </label>
+          </section>
+
+          <section class="checklist-section">
+            <h2>4. Plan de salida</h2>
+            <label class="check-item" for="exit-target">
+              <input id="exit-target" type="checkbox">
+              <span><strong>Tengo objetivo o zona de toma de beneficios.</strong><span>No improviso la salida cuando la operación ya está abierta.</span></span>
+            </label>
+            <label class="check-item" for="exit-management">
+              <input id="exit-management" type="checkbox">
+              <span><strong>Sé cómo gestionaré la operación si avanza.</strong><span>Parcial, break even, trailing o salida completa están definidos.</span></span>
+            </label>
+            <label class="check-item" for="exit-loss">
+              <input id="exit-loss" type="checkbox">
+              <span><strong>Acepto la pérdida antes de entrar.</strong><span>Si toca stop, no muevo la línea para tener razón.</span></span>
+            </label>
+          </section>
+
+          <section class="checklist-section">
+            <h2>5. Estado mental</h2>
+            <label class="check-item" for="mind-calm">
+              <input id="mind-calm" type="checkbox">
+              <span><strong>Estoy tranquilo y puedo esperar.</strong><span>No opero para recuperar, entretenerme o demostrar algo.</span></span>
+            </label>
+            <label class="check-item" for="mind-limit">
+              <input id="mind-limit" type="checkbox">
+              <span><strong>Respeto mi límite diario.</strong><span>Si ya he perdido foco, cierro la plataforma.</span></span>
+            </label>
+            <label class="check-item" for="mind-journal">
+              <input id="mind-journal" type="checkbox">
+              <span><strong>La operación podrá revisarse después.</strong><span>Captura, motivo de entrada y resultado quedarán registrados.</span></span>
+            </label>
+          </section>
+        </div>
+
+        <aside class="summary-panel" aria-label="Resultado del checklist">
+          <div class="progress-ring" data-progress-ring>
+            <span data-progress-percent>0%</span>
+          </div>
+          <h2>Calidad de entrada</h2>
+          <p data-decision>No hay suficiente calidad. La mejor operación puede ser no entrar.</p>
+
+          <div class="button-row">
+            <button class="secondary-button" type="button" data-reset-checklist>Reiniciar</button>
+            <button class="primary-button" type="button" onclick="window.print()">Guardar PDF</button>
+          </div>
+
+          <div class="decision-box">
+            <strong>Regla simple</strong>
+            <span>Si fallan contexto, stop o estado mental, la operación no pasa el filtro.</span>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../../assets/js/leads.js"></script>
+  </body>
+</html>
