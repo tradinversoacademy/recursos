@@ -11,6 +11,12 @@ Biblioteca estática de recursos gratuitos de TRADINVERSO.
 
 ## Recursos activos
 
+### IFVG
+
+- `recursos/ifvg/index.html`: explicación, formulario, vídeo y descarga.
+- `recursos/ifvg/recurso.html`: desarrollo completo del concepto.
+- `recursos/ifvg/guia-ifvg.pdf`: guía descargable.
+
 ### Método C3
 
 - `recursos/metodo-c3/index.html`: vídeo completo del sistema formativo de TRADINVERSO.

@@ -327,16 +327,86 @@ def build_data(path):
     c.save()
 
 
+def build_ifvg(path):
+    c = canvas.Canvas(str(path), pagesize=A4)
+    c.setTitle("IFVG - Guía completa TRADINVERSO")
+
+    header(c, "INVERSE FVG", 1)
+    title_block(
+        c,
+        "INVERSE FVG",
+        "La zona opuesta que confirma intención, valida el giro y rompe la estructura interna.",
+    )
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 305, "Qué muestra un IFVG")
+    gap = 14
+    card_w = (W - 76 - gap) / 2
+    phase_card(c, 38, H - 465, card_w, "01", "Cambio de ritmo", "El precio deja de desplazarse como lo hacía en el movimiento anterior.")
+    phase_card(c, 38 + card_w + gap, H - 465, card_w, "02", "Cambio de fuerza", "Aparece un impulso rápido y un desequilibrio en la dirección contraria.")
+    phase_card(c, 38, H - 615, card_w, "03", "Cambio de intención", "El mercado demuestra que puede estar girando y no haciendo solo un retroceso.")
+    phase_card(c, 38 + card_w + gap, H - 615, card_w, "04", "Ruptura interna", "La microestructura anterior deja de sostenerse y valida el cambio observado.")
+    footer_note(c)
+    c.showPage()
+
+    header(c, "INVERSE FVG", 2)
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 25)
+    c.drawString(38, H - 138, "Cómo lo usamos en TRADINVERSO")
+    paragraph(c, "El IFVG confirma el giro. La entrada llega después, con contexto y riesgo definido.", 38, H - 162, W - 76)
+
+    facts_y = H - 215
+    facts = [
+        ("Paso 1", "Limpieza de liquidez"),
+        ("Paso 2", "Ruptura con desplazamiento"),
+        ("Paso 3", "IFVG confirma el giro"),
+        ("Paso 4", "Corrección a zona relevante"),
+        ("Paso 5", "Entrada con lógica"),
+    ]
+    for label, value in facts:
+        fact_row(c, 38, facts_y, label, value, W - 76)
+        facts_y -= 44
+
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 470, "Diferencia rápida")
+    c.setFillColor(PAPER)
+    c.setStrokeColor(LINE)
+    c.roundRect(38, H - 585, W - 76, 88, 6, fill=1, stroke=1)
+    c.setFillColor(BLUE)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(56, H - 525, "FVG")
+    paragraph(c, "Desequilibrio en la dirección del impulso.", 108, H - 525, W - 164, size=10, leading=14, color=INK)
+    c.setFillColor(BLUE)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(56, H - 558, "IFVG")
+    paragraph(c, "Desequilibrio contrario que marca cambio de intención.", 108, H - 558, W - 164, size=10, leading=14, color=INK)
+
+    c.setFillColor(DARK)
+    c.roundRect(38, H - 700, W - 76, 86, 6, fill=1, stroke=0)
+    c.setFillColor(SKY)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(56, H - 642, "REGLA CLAVE")
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 17)
+    c.drawString(56, H - 670, "El IFVG es confirmación, no entrada.")
+    footer_note(c)
+    c.save()
+
+
 def main():
     amd_path = ROOT / "recursos" / "amd-ifvg" / "guia-amd-ifvg.pdf"
     orb_path = ROOT / "recursos" / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
     data_path = ROOT / "recursos" / "data-tradinverso" / "guia-data-tradinverso.pdf"
+    ifvg_path = ROOT / "recursos" / "ifvg" / "guia-ifvg.pdf"
     build_amd(amd_path)
     build_orb(orb_path)
     build_data(data_path)
+    build_ifvg(ifvg_path)
     print(amd_path)
     print(orb_path)
     print(data_path)
+    print(ifvg_path)
 
 
 if __name__ == "__main__":
