@@ -268,13 +268,75 @@ def build_orb(path):
     c.save()
 
 
+def build_data(path):
+    c = canvas.Canvas(str(path), pagesize=A4)
+    c.setTitle("DATA TRADINVERSO - Guía de journaling del trader")
+
+    header(c, "DATA TRADINVERSO", 1)
+    title_block(
+        c,
+        "DATA",
+        "El centro de control del trader: journaling técnico y emocional, gestión de cuentas y trading plan.",
+    )
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 305, "Cuatro pilares conectados")
+    gap = 14
+    card_w = (W - 76 - gap) / 2
+    phase_card(c, 38, H - 465, card_w, "01", "Journal técnico", "Registra contexto, estrategia, entrada, salida y resultado para revisar cada decisión.")
+    phase_card(c, 38 + card_w + gap, H - 465, card_w, "02", "Registro emocional", "Anota cómo te sientes antes, durante y después de operar para detectar patrones.")
+    phase_card(c, 38, H - 615, card_w, "03", "Gestión de cuentas", "Centraliza la evolución de tus cuentas y compara resultados con una visión objetiva.")
+    phase_card(c, 38 + card_w + gap, H - 615, card_w, "04", "Trading plan", "Define reglas, límites y objetivos para comparar el plan con la ejecución real.")
+    footer_note(c)
+    c.showPage()
+
+    header(c, "DATA TRADINVERSO", 2)
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 25)
+    c.drawString(38, H - 138, "De operar a aprender")
+    paragraph(c, "Un registro útil termina siempre en una decisión para la siguiente sesión.", 38, H - 162, W - 76)
+
+    facts_y = H - 215
+    facts = [
+        ("Antes de operar", "Plan + estado mental"),
+        ("Durante la sesión", "Ejecución + gestión"),
+        ("Después de operar", "Journal técnico + emocional"),
+        ("En la revisión", "Patrones + acciones de mejora"),
+    ]
+    for label, value in facts:
+        fact_row(c, 38, facts_y, label, value, W - 76)
+        facts_y -= 48
+
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 435, "Checklist para un journal útil")
+    checklist(
+        c,
+        38,
+        H - 480,
+        [
+            "¿He registrado la operación con contexto y estrategia?",
+            "¿He anotado mi estado emocional sin maquillar lo ocurrido?",
+            "¿El resultado está vinculado a la cuenta correcta?",
+            "¿He comparado la ejecución con mi trading plan?",
+            "¿La revisión termina con una mejora concreta para mañana?",
+        ],
+        W - 76,
+    )
+    footer_note(c)
+    c.save()
+
+
 def main():
     amd_path = ROOT / "recursos" / "amd-ifvg" / "guia-amd-ifvg.pdf"
     orb_path = ROOT / "recursos" / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
+    data_path = ROOT / "recursos" / "data-tradinverso" / "guia-data-tradinverso.pdf"
     build_amd(amd_path)
     build_orb(orb_path)
+    build_data(data_path)
     print(amd_path)
     print(orb_path)
+    print(data_path)
 
 
 if __name__ == "__main__":

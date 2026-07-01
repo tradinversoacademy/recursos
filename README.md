@@ -11,6 +11,17 @@ Biblioteca estática de recursos gratuitos de TRADINVERSO.
 
 ## Recursos activos
 
+### Método C3
+
+- `recursos/metodo-c3/index.html`: vídeo completo del sistema formativo de TRADINVERSO.
+- Este recurso no incluye formulario ni PDF.
+
+### DATA TRADINVERSO
+
+- `recursos/data-tradinverso/index.html`: vídeo de la aplicación, resumen y formulario.
+- `recursos/data-tradinverso/recurso.html`: explicación completa del sistema DATA.
+- `recursos/data-tradinverso/guia-data-tradinverso.pdf`: guía descargable.
+
 ### AMD + IFVG
 
 - `recursos/amd-ifvg/index.html`: vídeo Loom, resumen y formulario.
