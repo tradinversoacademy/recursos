@@ -94,20 +94,17 @@
       return { demo: true };
     }
 
-    await new Promise((resolve) => {
-      const image = new Image();
-      const timeout = window.setTimeout(resolve, 1600);
-
-      image.onload = () => {
-        window.clearTimeout(timeout);
-        resolve();
-      };
-      image.onerror = () => {
-        window.clearTimeout(timeout);
-        resolve();
-      };
-      image.src = buildLeadUrl(payload);
+    const request = fetch(buildLeadUrl(payload), {
+      method: "GET",
+      mode: "no-cors",
+      cache: "no-store",
+      keepalive: true
     });
+    const timeout = new Promise((_, reject) => {
+      window.setTimeout(() => reject(new Error("Tiempo de espera agotado")), 8000);
+    });
+
+    await Promise.race([request, timeout]);
 
     return { demo: false };
   }
@@ -153,7 +150,7 @@
         }
 
         if (submitButton) submitButton.disabled = true;
-        if (status) status.textContent = "Preparando el recurso...";
+        if (status) status.textContent = "Guardando tus datos...";
 
         try {
           const result = await sendLead(payload);
