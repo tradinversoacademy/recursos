@@ -1247,45 +1247,6 @@ a.nav-pill:hover {
   grid-column: 1 / -1;
 }
 
-.registered-access {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.registered-access > div:first-child {
-  display: grid;
-  gap: 5px;
-}
-
-.registered-access strong {
-  color: var(--navy);
-  font-size: 20px;
-}
-
-.registered-access span {
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.registered-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex: 0 0 auto;
-}
-
-.profile-reset {
-  border: 0;
-  padding: 10px;
-  color: var(--muted);
-  background: transparent;
-  font: inherit;
-  font-size: 13px;
-  text-decoration: underline;
-  cursor: pointer;
-}
 
 .protocol-hero h1 {
   max-width: 980px;
@@ -1973,16 +1934,6 @@ a.nav-pill:hover {
     grid-row: auto;
     width: 100%;
     white-space: normal;
-  }
-
-  .registered-access,
-  .registered-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .registered-access .primary-button {
-    width: 100%;
   }
 
   .call-band {

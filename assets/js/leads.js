@@ -1,71 +1,6 @@
 (function () {
   const endpoint = window.TRADINVERSO_LEADS_ENDPOINT || "";
   const endpointReady = endpoint && !endpoint.includes("PON_AQUI");
-  const profileKey = "tradinverso_lead_profile";
-
-  function getLeadProfile() {
-    try {
-      const profile = JSON.parse(localStorage.getItem(profileKey) || "null");
-      return profile && profile.email && profile.consentimiento === "si" ? profile : null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function saveLeadProfile(payload) {
-    try {
-      localStorage.setItem(profileKey, JSON.stringify({
-        nombre: payload.nombre,
-        email: payload.email,
-        consentimiento: payload.consentimiento,
-        registrado: payload.fecha
-      }));
-    } catch (error) {
-      // El formulario sigue funcionando aunque el navegador bloquee el almacenamiento.
-    }
-  }
-
-  function showRegisteredAccess(form, profile) {
-    const redirect = form.dataset.redirect || "recurso.html";
-    const isInformationForm = (form.dataset.recurso || "").includes("informacion");
-    const opensInNewTab = /\.pdf(?:$|[?#])/i.test(redirect);
-    const access = document.createElement("div");
-    access.className = "registered-access";
-
-    const copy = document.createElement("div");
-    const title = document.createElement("strong");
-    const text = document.createElement("span");
-    title.textContent = `Hola${profile.nombre ? `, ${profile.nombre}` : ""}`;
-    text.textContent = isInformationForm
-      ? "Ya tenemos tus datos. Puedes ver el contenido directamente."
-      : "Ya estás registrado. Este recurso está listo para ti.";
-    copy.append(title, text);
-
-    const actions = document.createElement("div");
-    actions.className = "registered-actions";
-
-    const link = document.createElement("a");
-    link.className = "primary-button";
-    link.href = redirect;
-    if (opensInNewTab) {
-      link.target = "_blank";
-      link.rel = "noopener";
-    }
-    link.textContent = isInformationForm ? "Ver el vídeo" : "Abrir recurso";
-
-    const reset = document.createElement("button");
-    reset.className = "profile-reset";
-    reset.type = "button";
-    reset.textContent = "Cambiar datos";
-    reset.addEventListener("click", () => {
-      localStorage.removeItem(profileKey);
-      window.location.reload();
-    });
-
-    actions.append(link, reset);
-    access.append(copy, actions);
-    form.replaceWith(access);
-  }
 
   function getParams() {
     const params = new URLSearchParams(window.location.search);
@@ -99,31 +34,28 @@
       return { demo: true };
     }
 
-    const request = fetch(buildLeadUrl(payload), {
-      method: "GET",
-      mode: "no-cors",
-      cache: "no-store",
-      keepalive: true
-    });
-    const timeout = new Promise((_, reject) => {
-      window.setTimeout(() => reject(new Error("Tiempo de espera agotado")), 8000);
-    });
+    await new Promise((resolve) => {
+      const image = new Image();
+      const timeout = window.setTimeout(resolve, 2200);
 
-    await Promise.race([request, timeout]);
+      image.onload = () => {
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      image.onerror = () => {
+        window.clearTimeout(timeout);
+        resolve();
+      };
+      image.src = buildLeadUrl(payload);
+    });
 
     return { demo: false };
   }
 
   function initLeadForms() {
     const params = getParams();
-    const profile = getLeadProfile();
 
     document.querySelectorAll("[data-lead-form]").forEach((form) => {
-      if (profile) {
-        showRegisteredAccess(form, profile);
-        return;
-      }
-
       const status = form.querySelector("[data-form-status]");
       const origenInput = form.querySelector('[name="origen"]');
       const campanaInput = form.querySelector('[name="campana"]');
@@ -161,7 +93,16 @@
 
         try {
           const result = await sendLead(payload);
-          saveLeadProfile(payload);
+          if (redirect.startsWith("#")) {
+            const target = document.querySelector(redirect);
+            if (status) status.textContent = "Datos enviados. Puedes ver el vídeo.";
+            if (submitButton) submitButton.disabled = false;
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            return;
+          }
+
           if (status) {
             status.textContent = result.demo
               ? "Modo prueba activo. Abriendo el recurso..."
