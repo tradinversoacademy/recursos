@@ -394,19 +394,131 @@ def build_ifvg(path):
     c.save()
 
 
+def mental_checklist(c, title, subtitle, phrase, items, page):
+    header(c, "PROTOCOLO MENTAL", page)
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 25)
+    c.drawString(38, H - 138, title)
+    paragraph(c, subtitle, 38, H - 164, W - 76, size=10.5, leading=15)
+
+    c.setFillColor(DARK)
+    c.roundRect(38, H - 250, W - 76, 58, 6, fill=1, stroke=0)
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawCentredString(W / 2, H - 226, phrase)
+
+    checklist(c, 38, H - 300, items, W - 76)
+    footer_note(c)
+
+
+def build_protocol(path):
+    c = canvas.Canvas(str(path), pagesize=A4)
+    c.setTitle("Protocolo mental del trader - TRADINVERSO")
+
+    header(c, "PROTOCOLO MENTAL", 1)
+    title_block(
+        c,
+        "PROTOCOLO MENTAL",
+        "Un filtro para operar con más calma, más disciplina y menos impulsividad antes, durante y después de cada trade.",
+    )
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 305, "No es una estrategia")
+    paragraph(
+        c,
+        "Es un sistema de pausa y revisión para proteger tu ejecución cuando aparecen la necesidad, el miedo o la urgencia por recuperar.",
+        38,
+        H - 332,
+        W - 76,
+        size=11,
+        leading=16,
+    )
+    gap = 14
+    card_w = (W - 76 - gap) / 2
+    phase_card(c, 38, H - 510, card_w, "01", "Antes", "Comprueba si llegas desde la calma, si la idea cumple el plan y si aceptas el riesgo.")
+    phase_card(c, 38 + card_w + gap, H - 510, card_w, "02", "Durante", "Deja de buscar razones nuevas. Sostén el plan y distingue gestión de ansiedad.")
+    phase_card(c, 38, H - 660, card_w, "03", "Después", "Evalúa entrada, riesgo y gestión. Una pérdida bien ejecutada también construye.")
+    phase_card(c, 38 + card_w + gap, H - 660, card_w, "04", "Cierre", "Puntúa tu disciplina, detecta patrones y decide qué corregir mañana.")
+    footer_note(c)
+    c.showPage()
+
+    mental_checklist(
+        c,
+        "1. Antes de operar",
+        "Detente dos minutos. Respira profundo tres veces y responde con honestidad.",
+        "Hoy no vengo a ganar dinero. Vengo a ejecutar mi plan.",
+        [
+            "¿Estoy operando desde la calma y no desde la necesidad?",
+            "¿Tengo razones objetivas para entrar?",
+            "¿La operación cumple mi plan?",
+            "¿Acepto perder este trade sin romper mis reglas?",
+            "¿Puedo dejar que el precio llegue a SL o TP sin intervenir por miedo?",
+            "¿Estoy en paz con no operar si no aparece una oportunidad clara?",
+        ],
+        2,
+    )
+    c.showPage()
+
+    mental_checklist(
+        c,
+        "2. Durante el trade",
+        "Una vez dentro, tu trabajo cambia: ya no buscas nuevas razones ni intentas controlar el mercado.",
+        "El precio ahora decide. Yo solo sostengo mi plan.",
+        [
+            "No muevas el SL salvo que tu plan lo permita.",
+            "No cierres antes de tiempo únicamente por miedo.",
+            "No aumentes el riesgo ni abras otra operación para compensar.",
+            "Evita mirar el gráfico cada pocos segundos; usa alarmas si lo necesitas.",
+            "Si aparece el impulso, levántate, respira y escribe qué estás sintiendo.",
+            "Pregúntate: ¿cerrar responde a mi plan o responde a mi miedo?",
+        ],
+        3,
+    )
+    c.showPage()
+
+    mental_checklist(
+        c,
+        "3. Después y cierre de sesión",
+        "No juzgues la operación solo por el resultado. Revisa la calidad de tu ejecución.",
+        "Una operación no define mi nivel. Mi disciplina sí.",
+        [
+            "¿He respetado mi entrada, mi riesgo y mi gestión?",
+            "¿He cerrado por plan o por emoción?",
+            "¿Qué he hecho bien y qué corregiré en la próxima operación?",
+            "¿He respetado mi horario y el máximo de operaciones?",
+            "¿He evitado operar por venganza o intentar recuperar una pérdida?",
+            "Puntúa tu disciplina del 1 al 10. No puntúes el dinero.",
+        ],
+        4,
+    )
+
+    c.setFillColor(ICE)
+    c.roundRect(38, 124, W - 76, 82, 6, fill=1, stroke=0)
+    c.setFillColor(BLUE)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(56, 180, "REGLA FINAL")
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(56, 156, "Primero disciplina. Después consistencia. Después resultados.")
+    c.save()
+
+
 def main():
     amd_path = ROOT / "recursos" / "amd-ifvg" / "guia-amd-ifvg.pdf"
     orb_path = ROOT / "recursos" / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
     data_path = ROOT / "recursos" / "data-tradinverso" / "guia-data-tradinverso.pdf"
     ifvg_path = ROOT / "recursos" / "ifvg" / "guia-ifvg.pdf"
+    protocol_path = ROOT / "recursos" / "protocolo-mental-trader" / "protocolo-mental-trader.pdf"
     build_amd(amd_path)
     build_orb(orb_path)
     build_data(data_path)
     build_ifvg(ifvg_path)
+    build_protocol(protocol_path)
     print(amd_path)
     print(orb_path)
     print(data_path)
     print(ifvg_path)
+    print(protocol_path)
 
 
 if __name__ == "__main__":

@@ -16,6 +16,8 @@ Biblioteca estática de recursos gratuitos de TRADINVERSO.
 - `recursos/ifvg/index.html`: explicación, formulario, vídeo y descarga.
 - `recursos/ifvg/recurso.html`: desarrollo completo del concepto.
 - `recursos/ifvg/guia-ifvg.pdf`: guía descargable.
+- `recursos/protocolo-mental-trader/`: protocolo de control mental y emocional.
+- `recursos/protocolo-mental-trader/protocolo-mental-trader.pdf`: PDF descargable.
 
 ### Método C3
 
