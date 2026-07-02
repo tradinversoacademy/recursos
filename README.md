@@ -18,6 +18,7 @@ Biblioteca estática de recursos gratuitos de TRADINVERSO.
 - `recursos/ifvg/guia-ifvg.pdf`: guía descargable.
 - `recursos/protocolo-mental-trader/`: protocolo de control mental y emocional.
 - `recursos/protocolo-mental-trader/protocolo-mental-trader.pdf`: PDF descargable.
+- `recursos/rango-asiatico/`: vídeo y guía visual sobre la manipulación del rango asiático.
 
 ### Método C3
 

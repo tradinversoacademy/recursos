@@ -28,6 +28,7 @@
   function showRegisteredAccess(form, profile) {
     const redirect = form.dataset.redirect || "recurso.html";
     const isInformationForm = (form.dataset.recurso || "").includes("informacion");
+    const opensInNewTab = /\.pdf(?:$|[?#])/i.test(redirect);
     const access = document.createElement("div");
     access.className = "registered-access";
 
@@ -46,6 +47,10 @@
     const link = document.createElement("a");
     link.className = "primary-button";
     link.href = redirect;
+    if (opensInNewTab) {
+      link.target = "_blank";
+      link.rel = "noopener";
+    }
     link.textContent = isInformationForm ? "Ver el vídeo" : "Abrir recurso";
 
     const reset = document.createElement("button");
@@ -132,6 +137,7 @@
         const submitButton = form.querySelector('button[type="submit"]');
         const data = new FormData(form);
         const redirect = form.dataset.redirect || "recurso.html";
+        const opensInNewTab = /\.pdf(?:$|[?#])/i.test(redirect);
         const payload = {
           fecha: new Date().toISOString(),
           nombre: String(data.get("nombre") || "").trim(),
@@ -151,6 +157,7 @@
 
         if (submitButton) submitButton.disabled = true;
         if (status) status.textContent = "Guardando tus datos...";
+        const resourceWindow = opensInNewTab ? window.open("about:blank", "_blank") : null;
 
         try {
           const result = await sendLead(payload);
@@ -161,9 +168,15 @@
               : "Datos guardados. Abriendo el recurso...";
           }
           window.setTimeout(() => {
-            window.location.href = redirect;
+            if (resourceWindow) {
+              resourceWindow.opener = null;
+              resourceWindow.location.href = redirect;
+            } else {
+              window.location.href = redirect;
+            }
           }, 650);
         } catch (error) {
+          if (resourceWindow) resourceWindow.close();
           if (status) status.textContent = "No se ha podido guardar. Inténtalo otra vez.";
           if (submitButton) submitButton.disabled = false;
         }

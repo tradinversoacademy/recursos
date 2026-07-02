@@ -18,6 +18,7 @@ CARDS = {
     "data-tradinverso": ("DATA TRADINVERSO", "El centro de control del trader"),
     "metodo-c3": ("MÉTODO C3", "El sistema de trabajo de TRADINVERSO"),
     "protocolo-mental-trader": ("PROTOCOLO MENTAL", "Frena el impulso. Ejecuta tu plan."),
+    "rango-asiatico": ("RANGO ASIÁTICO", "Estructura, manipulación y ejecución"),
 }
 
 

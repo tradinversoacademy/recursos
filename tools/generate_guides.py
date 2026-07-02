@@ -503,22 +503,85 @@ def build_protocol(path):
     c.save()
 
 
+def build_asian_range(path):
+    c = canvas.Canvas(str(path), pagesize=A4)
+    c.setTitle("Manipulación del rango asiático - TRADINVERSO")
+
+    header(c, "RANGO ASIÁTICO", 1)
+    title_block(
+        c,
+        "RANGO ASIÁTICO",
+        "Una guía visual para leer el rango, reconocer la manipulación y esperar una ejecución con contexto.",
+    )
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 305, "La lectura en cuatro momentos")
+    gap = 14
+    card_w = (W - 76 - gap) / 2
+    phase_card(c, 38, H - 465, card_w, "01", "Construcción", "Durante Asia, el precio define un rango y concentra liquidez en sus extremos.")
+    phase_card(c, 38 + card_w + gap, H - 465, card_w, "02", "Contexto", "Antes de actuar, ubicamos el rango dentro de la estructura y del recorrido de sesión.")
+    phase_card(c, 38, H - 615, card_w, "03", "Manipulación", "El precio barre uno de los extremos y captura la liquidez acumulada fuera del rango.")
+    phase_card(c, 38 + card_w + gap, H - 615, card_w, "04", "Confirmación", "No basta con la barrida: esperamos intención, estructura y una invalidación clara.")
+    footer_note(c)
+    c.showPage()
+
+    header(c, "RANGO ASIÁTICO", 2)
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 25)
+    c.drawString(38, H - 138, "Mapa rápido antes de ejecutar")
+    paragraph(c, "El rango es una referencia. La entrada depende del contexto y de la confirmación.", 38, H - 164, W - 76)
+
+    facts_y = H - 220
+    facts = [
+        ("Referencia", "Máximo y mínimo de Asia"),
+        ("Evento", "Barrida de un extremo"),
+        ("Validación", "Desplazamiento + estructura"),
+        ("Entrada", "Corrección con lógica"),
+        ("Invalida", "Nivel definido antes de entrar"),
+        ("Objetivo", "Liquidez o zona de sesión"),
+    ]
+    for label, value in facts:
+        fact_row(c, 38, facts_y, label, value, W - 76)
+        facts_y -= 43
+
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(38, H - 500, "Checklist de contexto")
+    checklist(
+        c,
+        38,
+        H - 545,
+        [
+            "¿El rango asiático está bien definido y tiene extremos claros?",
+            "¿La barrida ocurre en una zona y un momento con sentido?",
+            "¿Existe desplazamiento real después de la manipulación?",
+            "¿La entrada tiene invalidación y recorrido suficiente?",
+        ],
+        W - 76,
+    )
+    footer_note(c)
+    c.save()
+
+
 def main():
     amd_path = ROOT / "recursos" / "amd-ifvg" / "guia-amd-ifvg.pdf"
     orb_path = ROOT / "recursos" / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
     data_path = ROOT / "recursos" / "data-tradinverso" / "guia-data-tradinverso.pdf"
     ifvg_path = ROOT / "recursos" / "ifvg" / "guia-ifvg.pdf"
     protocol_path = ROOT / "recursos" / "protocolo-mental-trader" / "protocolo-mental-trader.pdf"
+    asian_range_path = ROOT / "recursos" / "rango-asiatico" / "guia-rango-asiatico.pdf"
     build_amd(amd_path)
     build_orb(orb_path)
     build_data(data_path)
     build_ifvg(ifvg_path)
     build_protocol(protocol_path)
+    build_asian_range(asian_range_path)
     print(amd_path)
     print(orb_path)
     print(data_path)
     print(ifvg_path)
     print(protocol_path)
+    print(asian_range_path)
 
 
 if __name__ == "__main__":
