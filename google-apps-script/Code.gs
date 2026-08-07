@@ -143,21 +143,23 @@ function setupSummarySheet(spreadsheet) {
   const sheet = spreadsheet.getSheetByName(SUMMARY_SHEET_NAME) || spreadsheet.insertSheet(SUMMARY_SHEET_NAME);
   sheet.clear();
   sheet.getRange("A1").setValue("Resumen leads TRADINVERSO");
+  // setFormula() espera siempre sintaxis en inglés y separador de comas,
+  // independientemente del idioma del documento.
   sheet.getRange("A3").setValue("Total leads");
-  sheet.getRange("B3").setFormula("=CONTARA(Leads!C2:C)");
+  sheet.getRange("B3").setFormula("=COUNTA(Leads!C2:C)");
   sheet.getRange("A4").setValue("Personas únicas");
-  sheet.getRange("B4").setFormula("=SI(CONTARA(Leads!C2:C)=0;0;CONTARA(UNIQUE(Leads!C2:C)))");
+  sheet.getRange("B4").setFormula("=IF(COUNTA(Leads!C2:C)=0,0,COUNTA(UNIQUE(Leads!C2:C)))");
   sheet.getRange("A5").setValue("Últimos 7 días");
-  sheet.getRange("B5").setFormula("=CONTAR.SI(Leads!A2:A;\">\"&(AHORA()-7))");
+  sheet.getRange("B5").setFormula("=COUNTIF(Leads!A2:A,\">\"&(NOW()-7))");
   sheet.getRange("A6").setValue("Último lead");
-  sheet.getRange("B6").setFormula("=SI(CONTARA(Leads!A2:A)=0;\"\";MAX(Leads!A2:A))");
+  sheet.getRange("B6").setFormula("=IF(COUNTA(Leads!A2:A)=0,\"\",MAX(Leads!A2:A))");
   sheet.getRange("B6").setNumberFormat("yyyy-mm-dd hh:mm");
 
   sheet.getRange("A8").setValue("Leads por recurso");
-  sheet.getRange("A9").setFormula("=SI(CONTARA(Leads!C2:C)=0;\"Sin datos\";QUERY(Leads!A2:I;\"select D, count(C) where C is not null group by D order by count(C) desc label D 'recurso', count(C) 'leads'\";0))");
+  sheet.getRange("A9").setFormula("=IF(COUNTA(Leads!C2:C)=0,\"Sin datos\",QUERY(Leads!A2:I,\"select D, count(C) where C is not null group by D order by count(C) desc label D 'recurso', count(C) 'leads'\",0))");
 
   sheet.getRange("D8").setValue("Leads por estado");
-  sheet.getRange("D9").setFormula("=SI(CONTARA(Leads!C2:C)=0;\"Sin datos\";QUERY(Leads!A2:I;\"select H, count(C) where C is not null group by H order by count(C) desc label H 'estado', count(C) 'leads'\";0))");
+  sheet.getRange("D9").setFormula("=IF(COUNTA(Leads!C2:C)=0,\"Sin datos\",QUERY(Leads!A2:I,\"select H, count(C) where C is not null group by H order by count(C) desc label H 'estado', count(C) 'leads'\",0))");
 
   sheet.getRange("A1:B1")
     .setFontWeight("bold")
