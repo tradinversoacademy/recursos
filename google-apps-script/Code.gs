@@ -1,6 +1,8 @@
 const SHEET_NAME = "Leads";
 const SPREADSHEET_ID = "1n-MnjkvHRd0F1Gu5JehfpRsDf3YsXKmXOnxytgfOTgY";
 const SUMMARY_SHEET_NAME = "Resumen";
+const UNIQUE_SHEET_NAME = "Únicos";
+const UNIQUE_HEADERS = ["nombre", "email", "recursos", "primer contacto", "último contacto", "recursos pedidos"];
 const HEADERS = [
   "fecha",
   "nombre",
@@ -57,10 +59,12 @@ function appendLead(body) {
   // independientemente de la configuración regional.
   sheet.getRange(sheet.getLastRow(), 1).setNumberFormat("yyyy-mm-dd hh:mm");
 
-  // Señal de repetidos y Resumen siempre al día.
+  // Señal de repetidos, lista de únicos y Resumen siempre al día.
   try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     updateRepeatSignals(sheet);
-    setupSummarySheet(SpreadsheetApp.openById(SPREADSHEET_ID));
+    setupUniqueSheet(spreadsheet);
+    setupSummarySheet(spreadsheet);
   } catch (error) {
     // Nada de esto debe impedir que el lead se guarde.
   }
@@ -90,7 +94,88 @@ function setupSpreadsheet() {
   migrateLeadSheet(sheet);
   setupLeadSheet(sheet);
   updateRepeatSignals(sheet);
+  setupUniqueSheet(spreadsheet);
   setupSummarySheet(spreadsheet);
+}
+
+// Lee las filas de Leads y devuelve una entrada por persona (email).
+function collectLeads(spreadsheet) {
+  const leadSheet = spreadsheet.getSheetByName(SHEET_NAME);
+  const lastRow = leadSheet ? leadSheet.getLastRow() : 1;
+  if (lastRow < 2) return [];
+
+  return leadSheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues()
+    .filter(function (row) { return String(row[2] || "").trim() !== ""; });
+}
+
+function groupByPerson(leads) {
+  const people = {};
+
+  leads.forEach(function (row) {
+    const email = String(row[2]).trim().toLowerCase();
+    const date = row[0] instanceof Date ? row[0] : new Date(row[0]);
+    const resource = String(row[3] || "").trim();
+
+    if (!people[email]) {
+      people[email] = { email: email, nombre: String(row[1] || "").trim(), first: null, last: null, resources: [] };
+    }
+    const person = people[email];
+    if (!person.nombre) person.nombre = String(row[1] || "").trim();
+    if (resource && person.resources.indexOf(resource) === -1) person.resources.push(resource);
+    if (!Number.isNaN(date.getTime())) {
+      if (!person.first || date < person.first) person.first = date;
+      if (!person.last || date > person.last) person.last = date;
+    }
+  });
+
+  return Object.keys(people).map(function (email) { return people[email]; });
+}
+
+// Una fila por persona, sin duplicados: la hoja para exportar a campañas.
+function setupUniqueSheet(spreadsheet) {
+  const sheet = spreadsheet.getSheetByName(UNIQUE_SHEET_NAME) || spreadsheet.insertSheet(UNIQUE_SHEET_NAME);
+  const people = groupByPerson(collectLeads(spreadsheet));
+
+  people.sort(function (a, b) {
+    if (b.resources.length !== a.resources.length) return b.resources.length - a.resources.length;
+    return (b.last ? b.last.getTime() : 0) - (a.last ? a.last.getTime() : 0);
+  });
+
+  sheet.clear();
+  sheet.getRange(1, 1, 1, UNIQUE_HEADERS.length).setValues([UNIQUE_HEADERS]);
+
+  if (people.length) {
+    const rows = people.map(function (person) {
+      return [
+        person.nombre,
+        person.email,
+        person.resources.length,
+        person.first,
+        person.last,
+        person.resources.join(", ")
+      ];
+    });
+    sheet.getRange(2, 1, rows.length, UNIQUE_HEADERS.length).setValues(rows);
+    sheet.getRange(2, 4, rows.length, 2).setNumberFormat("yyyy-mm-dd hh:mm");
+    sheet.getRange(2, 3, rows.length, 1).setHorizontalAlignment("center");
+  }
+
+  sheet.setFrozenRows(1);
+  sheet.getRange(1, 1, 1, UNIQUE_HEADERS.length)
+    .setFontWeight("bold")
+    .setFontColor("#ffffff")
+    .setBackground("#06245c")
+    .setHorizontalAlignment("center");
+  sheet.setColumnWidth(1, 200);
+  sheet.setColumnWidth(2, 250);
+  sheet.setColumnWidth(3, 90);
+  sheet.setColumnWidth(4, 150);
+  sheet.setColumnWidth(5, 150);
+  sheet.setColumnWidth(6, 420);
+
+  if (!sheet.getFilter()) {
+    sheet.getRange(1, 1, Math.max(people.length + 1, 2), UNIQUE_HEADERS.length).createFilter();
+  }
 }
 
 // Elimina las columnas antiguas "campaña" y "estado" si siguen presentes
@@ -191,7 +276,6 @@ function setupSummarySheet(spreadsheet) {
   const leads = rows.filter(function (row) { return String(row[2] || "").trim() !== ""; });
 
   const byEmail = {};
-  const names = {};
   const byResource = {};
   let lastDate = null;
   let lastSevenDays = 0;
@@ -203,7 +287,6 @@ function setupSummarySheet(spreadsheet) {
     const resource = String(row[3] || "(sin recurso)");
 
     byEmail[email] = (byEmail[email] || 0) + 1;
-    if (!names[email]) names[email] = String(row[1] || "");
     byResource[resource] = (byResource[resource] || 0) + 1;
     if (!Number.isNaN(date.getTime())) {
       if (!lastDate || date > lastDate) lastDate = date;
@@ -224,28 +307,20 @@ function setupSummarySheet(spreadsheet) {
   sheet.getRange("B3").setValue(leads.length);
   sheet.getRange("A4").setValue("Personas únicas");
   sheet.getRange("B4").setValue(Object.keys(byEmail).length);
-  sheet.getRange("A5").setValue("Últimos 7 días");
-  sheet.getRange("B5").setValue(lastSevenDays);
-  sheet.getRange("A6").setValue("Último lead");
+  const repeaters = Object.keys(byEmail).filter(function (email) { return byEmail[email] > 1; }).length;
+  sheet.getRange("A5").setValue("Repiten (ver hoja Únicos)");
+  sheet.getRange("B5").setValue(repeaters);
+  sheet.getRange("A6").setValue("Últimos 7 días");
+  sheet.getRange("B6").setValue(lastSevenDays);
+  sheet.getRange("A7").setValue("Último lead");
   if (lastDate) {
-    sheet.getRange("B6").setValue(lastDate).setNumberFormat("yyyy-mm-dd hh:mm");
+    sheet.getRange("B7").setValue(lastDate).setNumberFormat("yyyy-mm-dd hh:mm");
   }
 
-  sheet.getRange("A8").setValue("Leads por recurso");
+  sheet.getRange("A9").setValue("Leads por recurso");
   const resourceRows = sorted(byResource);
   if (resourceRows.length) {
-    sheet.getRange(9, 1, resourceRows.length, 2).setValues(resourceRows);
-  }
-
-  // Personas que han pedido más de un recurso: los leads más calientes.
-  sheet.getRange("D8").setValue("Repiten (más de un recurso)");
-  const repeaters = sorted(byEmail)
-    .filter(function (entry) { return entry[1] > 1; })
-    .map(function (entry) { return [names[entry[0]] || entry[0], entry[0], entry[1]]; });
-  if (repeaters.length) {
-    sheet.getRange(9, 4, repeaters.length, 3).setValues(repeaters);
-  } else {
-    sheet.getRange("D9").setValue("Nadie repite todavía");
+    sheet.getRange(10, 1, resourceRows.length, 2).setValues(resourceRows);
   }
 
   sheet.getRange("A1:B1")
@@ -253,12 +328,8 @@ function setupSummarySheet(spreadsheet) {
     .setFontColor("#ffffff")
     .setBackground("#06245c");
   sheet.getRange("A2").setFontColor("#566578");
-  sheet.getRange("A8").setFontWeight("bold");
-  sheet.getRange("D8").setFontWeight("bold");
-  sheet.getRange("A3:B6").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange("A9").setFontWeight("bold");
+  sheet.getRange("A3:B7").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
   sheet.setColumnWidth(1, 260);
   sheet.setColumnWidth(2, 140);
-  sheet.setColumnWidth(4, 200);
-  sheet.setColumnWidth(5, 260);
-  sheet.setColumnWidth(6, 90);
 }
