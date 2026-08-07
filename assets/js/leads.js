@@ -6,12 +6,11 @@
   const PROFILE_DURATION = 90 * 24 * 60 * 60 * 1000;
 
   function getParams() {
-    // Solo devuelve valores si vienen de verdad en la URL: los formularios ya
-    // declaran su origen y campaña por defecto en los campos ocultos.
+    // Solo devuelve valor si viene de verdad en la URL: los formularios ya
+    // declaran su origen por defecto en el campo oculto.
     const params = new URLSearchParams(window.location.search);
     return {
-      origen: params.get("origen") || params.get("utm_source") || "",
-      campana: params.get("campana") || params.get("utm_campaign") || ""
+      origen: params.get("origen") || params.get("utm_source") || ""
     };
   }
 
@@ -214,10 +213,8 @@
     document.querySelectorAll("[data-lead-form]").forEach((form) => {
       const status = form.querySelector("[data-form-status]");
       const origenInput = form.querySelector('[name="origen"]');
-      const campanaInput = form.querySelector('[name="campana"]');
 
       if (origenInput && params.origen) origenInput.value = params.origen;
-      if (campanaInput && params.campana) campanaInput.value = params.campana;
       applySavedProfile(form, savedProfile);
 
       form.addEventListener("submit", async (event) => {
@@ -236,9 +233,7 @@
           email: String(data.get("email") || "").trim(),
           recurso: form.dataset.recurso || "recurso-sin-nombre",
           origen: String(data.get("origen") || params.origen || "organico"),
-          campana: String(data.get("campana") || params.campana || "sin-campana"),
           consentimiento: data.get("consentimiento") ? "si" : "no",
-          estado: "nuevo",
           notas: ""
         };
 

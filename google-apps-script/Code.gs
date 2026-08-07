@@ -7,12 +7,10 @@ const HEADERS = [
   "email",
   "recurso",
   "origen",
-  "campaña",
   "consentimiento",
-  "estado",
+  "repetido",
   "notas"
 ];
-const STATUS_VALUES = ["nuevo", "contactado", "interesado", "descartado", "alumno"];
 
 function doPost(e) {
   const body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
@@ -21,22 +19,6 @@ function doPost(e) {
   return ContentService
     .createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-function testLead() {
-  const sheet = getLeadSheet();
-
-  sheet.appendRow([
-    new Date().toISOString(),
-    "Test TRADINVERSO",
-    "test@tradinverso.com",
-    "checklist-entrada-mercado",
-    "test-apps-script",
-    "test-manual",
-    "si",
-    "nuevo",
-    "Fila de prueba creada desde Apps Script"
-  ]);
 }
 
 function doGet(e) {
@@ -66,9 +48,8 @@ function appendLead(body) {
     String(body.email || "").trim().toLowerCase(),
     body.recurso || "",
     body.origen || "",
-    body.campana || body.campaña || "",
     body.consentimiento || "",
-    body.estado || "nuevo",
+    "",
     body.notas || ""
   ]);
 
@@ -76,11 +57,12 @@ function appendLead(body) {
   // independientemente de la configuración regional.
   sheet.getRange(sheet.getLastRow(), 1).setNumberFormat("yyyy-mm-dd hh:mm");
 
-  // Mantiene el Resumen al día con cada lead.
+  // Señal de repetidos y Resumen siempre al día.
   try {
+    updateRepeatSignals(sheet);
     setupSummarySheet(SpreadsheetApp.openById(SPREADSHEET_ID));
   } catch (error) {
-    // El Resumen nunca debe impedir que el lead se guarde.
+    // Nada de esto debe impedir que el lead se guarde.
   }
 }
 
@@ -96,6 +78,7 @@ function parseLeadDate(value) {
 function getLeadSheet() {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
+  migrateLeadSheet(sheet);
   setupLeadSheet(sheet);
 
   return sheet;
@@ -104,8 +87,41 @@ function getLeadSheet() {
 function setupSpreadsheet() {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
+  migrateLeadSheet(sheet);
   setupLeadSheet(sheet);
+  updateRepeatSignals(sheet);
   setupSummarySheet(spreadsheet);
+}
+
+// Elimina las columnas antiguas "campaña" y "estado" si siguen presentes
+// y garantiza la columna "repetido". Es idempotente.
+function migrateLeadSheet(sheet) {
+  if (sheet.getLastRow() === 0) return;
+
+  const width = sheet.getLastColumn();
+  if (!width) return;
+  const firstRow = sheet.getRange(1, 1, 1, width).getValues()[0].map(function (value) {
+    return String(value).trim().toLowerCase();
+  });
+
+  ["campaña", "campana", "estado"].forEach(function (name) {
+    const current = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+      .map(function (value) { return String(value).trim().toLowerCase(); });
+    const index = current.indexOf(name);
+    if (index !== -1) {
+      sheet.deleteColumn(index + 1);
+    }
+  });
+
+  const afterDelete = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+    .map(function (value) { return String(value).trim().toLowerCase(); });
+  if (afterDelete.indexOf("repetido") === -1 && firstRow.join("") !== "") {
+    const notasIndex = afterDelete.indexOf("notas");
+    if (notasIndex !== -1) {
+      sheet.insertColumnBefore(notasIndex + 1);
+      sheet.getRange(1, notasIndex + 1).setValue("repetido");
+    }
+  }
 }
 
 function setupLeadSheet(sheet) {
@@ -130,20 +146,39 @@ function setupLeadSheet(sheet) {
   sheet.setColumnWidth(3, 230);
   sheet.setColumnWidth(4, 210);
   sheet.setColumnWidth(5, 130);
-  sheet.setColumnWidth(6, 170);
-  sheet.setColumnWidth(7, 145);
-  sheet.setColumnWidth(8, 130);
-  sheet.setColumnWidth(9, 260);
+  sheet.setColumnWidth(6, 145);
+  sheet.setColumnWidth(7, 110);
+  sheet.setColumnWidth(8, 260);
 
   if (!sheet.getFilter()) {
     sheet.getRange(1, 1, sheet.getMaxRows(), HEADERS.length).createFilter();
   }
+}
 
-  const statusRule = SpreadsheetApp.newDataValidation()
-    .requireValueInList(STATUS_VALUES, true)
-    .setAllowInvalid(false)
-    .build();
-  sheet.getRange(2, 8, Math.max(sheet.getMaxRows() - 1, 1), 1).setDataValidation(statusRule);
+// Marca en la columna "repetido" cuántos recursos ha pedido cada persona:
+// "x2", "x3"... en cada una de sus filas. Vacío si solo ha pedido uno.
+function updateRepeatSignals(sheet) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+
+  const emailColumn = 3;
+  const repeatColumn = 7;
+  const emails = sheet.getRange(2, emailColumn, lastRow - 1, 1).getValues();
+  const counts = {};
+
+  emails.forEach(function (row) {
+    const email = String(row[0] || "").trim().toLowerCase();
+    if (email) counts[email] = (counts[email] || 0) + 1;
+  });
+
+  const signals = emails.map(function (row) {
+    const email = String(row[0] || "").trim().toLowerCase();
+    return [email && counts[email] > 1 ? "x" + counts[email] : ""];
+  });
+
+  const range = sheet.getRange(2, repeatColumn, signals.length, 1);
+  range.setValues(signals);
+  range.setFontWeight("bold").setFontColor("#2d89ff").setHorizontalAlignment("center");
 }
 
 function setupSummarySheet(spreadsheet) {
@@ -155,9 +190,9 @@ function setupSummarySheet(spreadsheet) {
   const rows = lastRow > 1 ? leadSheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues() : [];
   const leads = rows.filter(function (row) { return String(row[2] || "").trim() !== ""; });
 
-  const uniqueEmails = {};
+  const byEmail = {};
+  const names = {};
   const byResource = {};
-  const byStatus = {};
   let lastDate = null;
   let lastSevenDays = 0;
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -166,11 +201,10 @@ function setupSummarySheet(spreadsheet) {
     const date = row[0] instanceof Date ? row[0] : new Date(row[0]);
     const email = String(row[2]).trim().toLowerCase();
     const resource = String(row[3] || "(sin recurso)");
-    const status = String(row[7] || "nuevo");
 
-    uniqueEmails[email] = true;
+    byEmail[email] = (byEmail[email] || 0) + 1;
+    if (!names[email]) names[email] = String(row[1] || "");
     byResource[resource] = (byResource[resource] || 0) + 1;
-    byStatus[status] = (byStatus[status] || 0) + 1;
     if (!Number.isNaN(date.getTime())) {
       if (!lastDate || date > lastDate) lastDate = date;
       if (date > weekAgo) lastSevenDays += 1;
@@ -189,7 +223,7 @@ function setupSummarySheet(spreadsheet) {
   sheet.getRange("A3").setValue("Total leads");
   sheet.getRange("B3").setValue(leads.length);
   sheet.getRange("A4").setValue("Personas únicas");
-  sheet.getRange("B4").setValue(Object.keys(uniqueEmails).length);
+  sheet.getRange("B4").setValue(Object.keys(byEmail).length);
   sheet.getRange("A5").setValue("Últimos 7 días");
   sheet.getRange("B5").setValue(lastSevenDays);
   sheet.getRange("A6").setValue("Último lead");
@@ -203,10 +237,15 @@ function setupSummarySheet(spreadsheet) {
     sheet.getRange(9, 1, resourceRows.length, 2).setValues(resourceRows);
   }
 
-  sheet.getRange("D8").setValue("Leads por estado");
-  const statusRows = sorted(byStatus);
-  if (statusRows.length) {
-    sheet.getRange(9, 4, statusRows.length, 2).setValues(statusRows);
+  // Personas que han pedido más de un recurso: los leads más calientes.
+  sheet.getRange("D8").setValue("Repiten (más de un recurso)");
+  const repeaters = sorted(byEmail)
+    .filter(function (entry) { return entry[1] > 1; })
+    .map(function (entry) { return [names[entry[0]] || entry[0], entry[0], entry[1]]; });
+  if (repeaters.length) {
+    sheet.getRange(9, 4, repeaters.length, 3).setValues(repeaters);
+  } else {
+    sheet.getRange("D9").setValue("Nadie repite todavía");
   }
 
   sheet.getRange("A1:B1")
@@ -219,6 +258,7 @@ function setupSummarySheet(spreadsheet) {
   sheet.getRange("A3:B6").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
   sheet.setColumnWidth(1, 260);
   sheet.setColumnWidth(2, 140);
-  sheet.setColumnWidth(4, 180);
-  sheet.setColumnWidth(5, 100);
+  sheet.setColumnWidth(4, 200);
+  sheet.setColumnWidth(5, 260);
+  sheet.setColumnWidth(6, 90);
 }
