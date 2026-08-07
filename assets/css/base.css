@@ -3452,6 +3452,31 @@ a.nav-pill:hover {
   max-width: 780px;
 }
 
+.nav-pill-cta {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+  font-weight: 750;
+}
+
+.nav-pill-cta:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+
+.related-resources {
+  padding: 52px 0 24px;
+}
+
+.related-resources .section-heading .nav-pill {
+  white-space: nowrap;
+}
+
+.library-closing-promo {
+  width: min(1160px, calc(100% - 32px));
+  margin: 12px auto 48px;
+}
+
 .amd-cycle-videos {
   width: min(1160px, calc(100% - 32px));
   margin: 0 auto;

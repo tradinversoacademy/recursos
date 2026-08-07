@@ -370,11 +370,12 @@
     const section = document.createElement("section");
     section.className = "masterclass-promo";
     section.dataset.masterclassPromo = "";
+    section.hidden = true;
     section.innerHTML = `
       <div>
-        <span class="masterclass-promo-badge">Acceso gratuito</span>
-        <h2>Accede a la masterclass gratuita de TRADINVERSO</h2>
-        <p>Descubre cómo convertir estos conceptos en un proceso de trading sencillo, objetivo y acompañado.</p>
+        <span class="masterclass-promo-badge">Siguiente paso</span>
+        <h2>Tu guía ya se está descargando</h2>
+        <p>Mientras la revisas: en la clase gratuita te enseño cómo convertir estos conceptos en un proceso de trading sencillo, objetivo y acompañado.</p>
       </div>
       <a class="masterclass-button" href="https://clase.tradinverso.com/" target="_blank" rel="noopener">Ver la clase gratuita <span aria-hidden="true">→</span></a>
     `;
@@ -384,6 +385,10 @@
       leadSection.after(section);
     } else {
       footer.before(section);
+    }
+
+    if (typeof window.tradinversoDecorateLinks === "function") {
+      window.tradinversoDecorateLinks(section);
     }
   }
 

@@ -1,6 +1,54 @@
 (function () {
   "use strict";
 
+  function renderLibraryCards() {
+    var container = document.querySelector("[data-resource-list]");
+    var catalog = window.TRADINVERSO_RESOURCES || [];
+    if (!container || !catalog.length) return;
+
+    catalog.filter(function (resource) {
+      return !resource.hidden;
+    }).forEach(function (resource) {
+      var card = document.createElement("article");
+      card.className = "resource-list-card";
+      card.dataset.resourceCard = "";
+      card.dataset.category = resource.category;
+      card.dataset.search = resource.search;
+
+      var top = document.createElement("div");
+      top.className = "resource-list-top";
+      var symbol = document.createElement("span");
+      symbol.className = "resource-symbol";
+      symbol.textContent = resource.symbol;
+      var type = document.createElement("span");
+      type.className = "resource-list-type";
+      type.textContent = resource.type;
+      top.appendChild(symbol);
+      top.appendChild(type);
+
+      var title = document.createElement("h3");
+      title.textContent = resource.title;
+      var description = document.createElement("p");
+      description.textContent = resource.description;
+      var link = document.createElement("a");
+      link.href = "recursos/" + resource.slug + "/index.html";
+      link.innerHTML = "";
+      link.appendChild(document.createTextNode(resource.cta + " "));
+      var arrow = document.createElement("span");
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      link.appendChild(arrow);
+
+      card.appendChild(top);
+      card.appendChild(title);
+      card.appendChild(description);
+      card.appendChild(link);
+      container.appendChild(card);
+    });
+  }
+
+  renderLibraryCards();
+
   var searchInput = document.querySelector("[data-library-search]");
   var filterButtons = Array.from(document.querySelectorAll("[data-library-filter]"));
   var cards = Array.from(document.querySelectorAll("[data-resource-card]"));
