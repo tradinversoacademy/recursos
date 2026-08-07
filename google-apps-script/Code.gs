@@ -75,6 +75,13 @@ function appendLead(body) {
   // Asegura el formato de fecha en la fila recién añadida,
   // independientemente de la configuración regional.
   sheet.getRange(sheet.getLastRow(), 1).setNumberFormat("yyyy-mm-dd hh:mm");
+
+  // Mantiene el Resumen al día con cada lead.
+  try {
+    setupSummarySheet(SpreadsheetApp.openById(SPREADSHEET_ID));
+  } catch (error) {
+    // El Resumen nunca debe impedir que el lead se guarde.
+  }
 }
 
 function parseLeadDate(value) {
@@ -140,35 +147,77 @@ function setupLeadSheet(sheet) {
 }
 
 function setupSummarySheet(spreadsheet) {
+  // Calcula todo en el script y escribe valores: inmune a la configuración
+  // regional del documento y siempre al día (se ejecuta con cada lead).
   const sheet = spreadsheet.getSheetByName(SUMMARY_SHEET_NAME) || spreadsheet.insertSheet(SUMMARY_SHEET_NAME);
+  const leadSheet = spreadsheet.getSheetByName(SHEET_NAME);
+  const lastRow = leadSheet ? leadSheet.getLastRow() : 1;
+  const rows = lastRow > 1 ? leadSheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues() : [];
+  const leads = rows.filter(function (row) { return String(row[2] || "").trim() !== ""; });
+
+  const uniqueEmails = {};
+  const byResource = {};
+  const byStatus = {};
+  let lastDate = null;
+  let lastSevenDays = 0;
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  leads.forEach(function (row) {
+    const date = row[0] instanceof Date ? row[0] : new Date(row[0]);
+    const email = String(row[2]).trim().toLowerCase();
+    const resource = String(row[3] || "(sin recurso)");
+    const status = String(row[7] || "nuevo");
+
+    uniqueEmails[email] = true;
+    byResource[resource] = (byResource[resource] || 0) + 1;
+    byStatus[status] = (byStatus[status] || 0) + 1;
+    if (!Number.isNaN(date.getTime())) {
+      if (!lastDate || date > lastDate) lastDate = date;
+      if (date > weekAgo) lastSevenDays += 1;
+    }
+  });
+
+  const sorted = function (counts) {
+    return Object.keys(counts)
+      .map(function (key) { return [key, counts[key]]; })
+      .sort(function (a, b) { return b[1] - a[1]; });
+  };
+
   sheet.clear();
   sheet.getRange("A1").setValue("Resumen leads TRADINVERSO");
-  // setFormula() espera siempre sintaxis en inglés y separador de comas,
-  // independientemente del idioma del documento.
+  sheet.getRange("A2").setValue("Actualizado automáticamente con cada lead");
   sheet.getRange("A3").setValue("Total leads");
-  sheet.getRange("B3").setFormula("=COUNTA(Leads!C2:C)");
+  sheet.getRange("B3").setValue(leads.length);
   sheet.getRange("A4").setValue("Personas únicas");
-  sheet.getRange("B4").setFormula("=IF(COUNTA(Leads!C2:C)=0,0,COUNTA(UNIQUE(Leads!C2:C)))");
+  sheet.getRange("B4").setValue(Object.keys(uniqueEmails).length);
   sheet.getRange("A5").setValue("Últimos 7 días");
-  sheet.getRange("B5").setFormula("=COUNTIF(Leads!A2:A,\">\"&(NOW()-7))");
+  sheet.getRange("B5").setValue(lastSevenDays);
   sheet.getRange("A6").setValue("Último lead");
-  sheet.getRange("B6").setFormula("=IF(COUNTA(Leads!A2:A)=0,\"\",MAX(Leads!A2:A))");
-  sheet.getRange("B6").setNumberFormat("yyyy-mm-dd hh:mm");
+  if (lastDate) {
+    sheet.getRange("B6").setValue(lastDate).setNumberFormat("yyyy-mm-dd hh:mm");
+  }
 
   sheet.getRange("A8").setValue("Leads por recurso");
-  sheet.getRange("A9").setFormula("=IF(COUNTA(Leads!C2:C)=0,\"Sin datos\",QUERY(Leads!A2:I,\"select D, count(C) where C is not null group by D order by count(C) desc label D 'recurso', count(C) 'leads'\",0))");
+  const resourceRows = sorted(byResource);
+  if (resourceRows.length) {
+    sheet.getRange(9, 1, resourceRows.length, 2).setValues(resourceRows);
+  }
 
   sheet.getRange("D8").setValue("Leads por estado");
-  sheet.getRange("D9").setFormula("=IF(COUNTA(Leads!C2:C)=0,\"Sin datos\",QUERY(Leads!A2:I,\"select H, count(C) where C is not null group by H order by count(C) desc label H 'estado', count(C) 'leads'\",0))");
+  const statusRows = sorted(byStatus);
+  if (statusRows.length) {
+    sheet.getRange(9, 4, statusRows.length, 2).setValues(statusRows);
+  }
 
   sheet.getRange("A1:B1")
     .setFontWeight("bold")
     .setFontColor("#ffffff")
     .setBackground("#06245c");
+  sheet.getRange("A2").setFontColor("#566578");
   sheet.getRange("A8").setFontWeight("bold");
   sheet.getRange("D8").setFontWeight("bold");
   sheet.getRange("A3:B6").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
-  sheet.setColumnWidth(1, 240);
+  sheet.setColumnWidth(1, 260);
   sheet.setColumnWidth(2, 140);
   sheet.setColumnWidth(4, 180);
   sheet.setColumnWidth(5, 100);
