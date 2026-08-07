@@ -46,7 +46,11 @@ def render_card(resource):
 
 
 def main():
-    resources = [item for item in load_catalog() if not item.get("hidden")]
+    # Los destacados ya tienen su tarjeta propia arriba y los ocultos no se listan.
+    resources = [
+        item for item in load_catalog()
+        if not item.get("hidden") and not item.get("featured")
+    ]
     cards = "\n\n".join(render_card(item) for item in resources)
     html = INDEX.read_text(encoding="utf-8")
 

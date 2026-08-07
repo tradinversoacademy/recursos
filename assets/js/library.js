@@ -10,7 +10,7 @@
     if (container.querySelector("[data-resource-card]")) return;
 
     catalog.filter(function (resource) {
-      return !resource.hidden;
+      return !resource.hidden && !resource.featured;
     }).forEach(function (resource) {
       var card = document.createElement("article");
       card.className = "resource-list-card";

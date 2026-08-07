@@ -1,7 +1,31 @@
 // Catálogo central de recursos TRADINVERSO.
 // Única fuente de verdad: la biblioteca y los "recursos relacionados" se generan desde aquí.
-// hidden: true → el recurso existe y funciona, pero solo se accede por URL directa.
+// hidden: true   → el recurso existe y funciona, pero solo se accede por URL directa.
+// featured: true → ya tiene su tarjeta destacada en la biblioteca; aquí solo sirve
+//                  para que aparezca entre los recursos relacionados.
 window.TRADINVERSO_RESOURCES = [
+  {
+    slug: "metodo-c3",
+    title: "Método C3",
+    description: "El sistema paso a paso con el que el alumno construye un proceso consistente.",
+    symbol: "C3",
+    type: "Sistema formativo",
+    category: "programa",
+    search: "metodo c3 sistema tradinverso formacion consistencia rentabilidad",
+    cta: "Ver Método C3",
+    featured: true
+  },
+  {
+    slug: "programa-tradinverso",
+    title: "Todo lo que incluye TRADINVERSO",
+    description: "Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.",
+    symbol: "PT",
+    type: "Programa completo",
+    category: "programa",
+    search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
+    cta: "Ver el programa",
+    featured: true
+  },
   {
     slug: "orb-nasdaq",
     title: "Estrategia ORB Nasdaq",

@@ -131,12 +131,22 @@
       return resource.slug !== slug && !resource.hidden;
     });
     var sameCategory = available.filter(function (resource) {
-      return current && resource.category === current.category;
+      return current && resource.category === current.category && !resource.featured;
     });
     var others = available.filter(function (resource) {
-      return !current || resource.category !== current.category;
+      return sameCategory.indexOf(resource) === -1 && !resource.featured;
     });
-    var related = sameCategory.concat(others).slice(0, 3);
+    var featured = available.filter(function (resource) {
+      return resource.featured;
+    });
+
+    // Dos recursos afines y uno destacado: el visitante siempre tiene a mano
+    // el camino hacia el programa.
+    var related = sameCategory.concat(others).slice(0, 2);
+    if (featured.length) {
+      related.push(featured[related.length % featured.length]);
+    }
+    related = related.concat(sameCategory.concat(others).slice(2)).slice(0, 3);
     if (!related.length) return;
 
     var section = document.createElement("section");

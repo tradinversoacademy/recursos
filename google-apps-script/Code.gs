@@ -100,11 +100,18 @@ function parseLeadDate(value) {
   return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
 }
 
+// Al guardar un lead solo se comprueba que la hoja existe con sus cabeceras:
+// el formateo completo (bordes, anchos, filtros) es trabajo caro y no cambia
+// entre leads, así que se reserva para setupSpreadsheet().
 function getLeadSheet() {
   const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = spreadsheet.getSheetByName(SHEET_NAME) || spreadsheet.insertSheet(SHEET_NAME);
-  migrateLeadSheet(sheet);
-  setupLeadSheet(sheet);
+
+  const firstRow = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
+  if (firstRow.join("") === "") {
+    migrateLeadSheet(sheet);
+    setupLeadSheet(sheet);
+  }
 
   return sheet;
 }
