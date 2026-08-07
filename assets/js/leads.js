@@ -195,6 +195,19 @@
     link.remove();
   }
 
+  // Calendly acepta el nombre y el email por query string: así el lead no
+  // vuelve a escribir lo que ya ha puesto en el formulario.
+  function buildCalendlyUrl(baseUrl, payload) {
+    try {
+      const url = new URL(baseUrl);
+      url.searchParams.set("name", payload.nombre);
+      url.searchParams.set("email", payload.email);
+      return url.toString();
+    } catch (error) {
+      return baseUrl;
+    }
+  }
+
   function revealSuccessTarget(form) {
     const selector = form.dataset.successTarget;
     const target = selector
@@ -225,8 +238,9 @@
         const configuredRedirect = form.dataset.redirect || "";
         const download = form.dataset.download
           || (/\.pdf(?:$|[?#])/i.test(configuredRedirect) ? configuredRedirect : "");
-        const redirect = form.dataset.redirect || (download ? "" : "recurso.html");
-        const opensInNewTab = !download && /\.pdf(?:$|[?#])/i.test(redirect);
+        const calendly = form.dataset.calendly || "";
+        const redirect = form.dataset.redirect || (download || calendly ? "" : "recurso.html");
+        const opensInNewTab = Boolean(calendly) || (!download && /\.pdf(?:$|[?#])/i.test(redirect));
         const payload = {
           fecha: new Date().toISOString(),
           nombre: String(data.get("nombre") || "").trim(),
@@ -257,6 +271,31 @@
             : await sendLead(payload);
           saveProfile(payload);
           markRecordedAccess(payload.email, payload.recurso);
+
+          // Con los datos recién capturados, los enlaces a Calendly de esta
+          // misma página ya no vuelven a pedirlos.
+          if (typeof window.tradinversoDecorateLinks === "function") {
+            window.tradinversoDecorateLinks(document);
+          }
+
+          if (calendly) {
+            const calendlyUrl = buildCalendlyUrl(calendly, payload);
+            if (status) status.textContent = "Abriendo el calendario con tus datos...";
+            if (resourceWindow) {
+              resourceWindow.opener = null;
+              resourceWindow.location.href = calendlyUrl;
+            } else {
+              window.open(calendlyUrl, "_blank", "noopener");
+            }
+            // Respaldo visible por si el navegador bloquea la pestaña emergente.
+            document.querySelectorAll("[data-calendly-fallback]").forEach((link) => {
+              link.href = calendlyUrl;
+            });
+            revealSuccessTarget(form);
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+
           if (download) {
             if (status) {
               status.textContent = result.demo

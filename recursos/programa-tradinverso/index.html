@@ -57,7 +57,7 @@
               <span class="section-kicker">Revisamos tu situación</span>
               <h2>¿Quieres saber cómo adaptar el programa a tu caso?</h2>
             </div>
-            <form class="form-grid" data-lead-form data-recurso="programa-tradinverso-revision-caso" data-redirect="#programa-revision-caso" data-hide-after-success="#programa-revision-inicial" data-success-message="Datos guardados. Ya puedes agendar la revisión de tu caso.">
+            <form class="form-grid" data-lead-form data-recurso="programa-tradinverso-revision-caso" data-calendly="https://calendly.com/tradinverso/reunion-equipo-tradinverso" data-success-target="#programa-revision-caso">
               <input type="hidden" name="origen" value="organico">
               <div class="field">
                 <label for="nombre">Nombre</label>
@@ -71,7 +71,7 @@
                 <input id="consentimiento" name="consentimiento" type="checkbox" required>
                 <span>Acepto que el equipo de TRADINVERSO contacte conmigo para revisar mi caso. Podré darme de baja cuando quiera.</span>
               </label>
-              <button class="primary-button" type="submit">Solicitar revisión <span aria-hidden="true">→</span></button>
+              <button class="primary-button" type="submit">Elegir día y hora <span aria-hidden="true">→</span></button>
               <div class="form-status" data-form-status aria-live="polite"></div>
             </form>
           </aside>
@@ -79,11 +79,11 @@
 
         <section class="call-band c3-review-call" id="programa-revision-caso" hidden>
           <div class="c3-review-copy">
-            <span class="section-kicker">Siguiente paso</span>
-            <h2>Revisamos tu caso contigo</h2>
-            <p>Reserva una llamada para contarnos tu situación, resolver tus dudas y comprobar si el programa encaja con el momento en el que estás.</p>
+            <span class="section-kicker">Ya está</span>
+            <h2>Hemos abierto el calendario en otra pestaña</h2>
+            <p>Elige el día y la hora que mejor te vengan. Si no se ha abierto, usa este botón.</p>
           </div>
-          <a class="primary-button" href="https://calendly.com/tradinverso/reunion-equipo-tradinverso" target="_blank" rel="noopener">Agendar la revisión <span aria-hidden="true">→</span></a>
+          <a class="primary-button" data-calendly-fallback href="https://calendly.com/tradinverso/reunion-equipo-tradinverso" target="_blank" rel="noopener">Abrir el calendario <span aria-hidden="true">→</span></a>
         </section>
       </div>
 
@@ -136,8 +136,8 @@
     </main>
 
     <script src="../../assets/js/config.js"></script>
-    <script src="../../assets/js/resources.js?v=20260807-3"></script>
-    <script src="../../assets/js/site.js?v=20260807-3"></script>
-    <script src="../../assets/js/leads.js?v=20260807-3"></script>
+    <script src="../../assets/js/resources.js?v=20260807-4"></script>
+    <script src="../../assets/js/site.js?v=20260807-4"></script>
+    <script src="../../assets/js/leads.js?v=20260807-4"></script>
   </body>
 </html>

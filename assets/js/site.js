@@ -15,13 +15,35 @@
     return null;
   }
 
+  // Perfil que leads.js guarda al enviar cualquier formulario (90 días).
+  function getSavedProfile() {
+    try {
+      var profile = JSON.parse(localStorage.getItem("tradinverso_lead_profile_v1") || "null");
+      if (!profile || !profile.nombre || !profile.email || Number(profile.expiresAt) <= Date.now()) return null;
+      return profile;
+    } catch (error) {
+      return null;
+    }
+  }
+
   function decorateLinks(root) {
     var scope = root || document;
+    var profile = getSavedProfile();
+
     scope.querySelectorAll('a[href*="clase.tradinverso.com"], a[href*="calendly.com"]').forEach(function (link) {
       try {
         var url = new URL(link.href);
-        if (url.searchParams.get("utm_source")) return;
-        url.searchParams.set("utm_source", "recursos");
+        var isCalendly = url.hostname.indexOf("calendly.com") !== -1;
+
+        // Si ya conocemos al lead, Calendly recibe sus datos y no se los vuelve a pedir.
+        if (isCalendly && profile && !url.searchParams.get("email")) {
+          url.searchParams.set("name", profile.nombre);
+          url.searchParams.set("email", profile.email);
+        }
+
+        if (!url.searchParams.get("utm_source")) {
+          url.searchParams.set("utm_source", "recursos");
+        }
         link.href = url.toString();
       } catch (error) {
         // Un enlace malformado no debe romper el resto de la página.
