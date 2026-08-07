@@ -59,11 +59,11 @@ window.TRADINVERSO_RESOURCES = [
   {
     slug: "amd-ifvg",
     title: "AMD + IFVG",
-    description: "De la acumulación y la manipulación a una distribución confirmada.",
+    description: "Sesión real en Nasdaq y guía de 11 páginas: de la liquidez a la ejecución.",
     symbol: "AMD",
     type: "Operativa",
     category: "operativas",
-    search: "amd ifvg acumulacion manipulacion distribucion nasdaq",
+    search: "amd ifvg acumulacion manipulacion distribucion nasdaq liquidez confirmacion riesgo gestion checklist guia",
     cta: "Abrir recurso"
   },
   {
