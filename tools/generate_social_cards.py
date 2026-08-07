@@ -25,6 +25,7 @@ CARDS = {
     "rango-asiatico": ("RANGO ASIÁTICO", "Estructura, manipulación y ejecución"),
     "manipulacion-maximos-minimos": ("MÁXIMOS Y MÍNIMOS", "Toma de liquidez y confirmación"),
     "modelo-liquidez-estructura-fvg": ("LIQUIDEZ + ESTRUCTURA + FVG", "El modelo de compra en tres pasos"),
+    "amd": ("AMD", "Acumulación, manipulación y distribución"),
 }
 
 

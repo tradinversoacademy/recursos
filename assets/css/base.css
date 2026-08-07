@@ -3452,6 +3452,37 @@ a.nav-pill:hover {
   max-width: 780px;
 }
 
+.amd-cycle-videos {
+  width: min(1160px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 52px 0;
+}
+
+.amd-cycle-videos-intro {
+  margin: 0 0 28px;
+  max-width: 860px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.amd-cycle-videos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.amd-cycle-videos-grid .video-stage {
+  width: 100%;
+  padding: 0;
+}
+
+.amd-cycle-videos-grid .text-link {
+  display: inline-block;
+  margin-top: 10px;
+}
+
 @media (max-width: 880px) {
   .hero,
   .resource-grid,
@@ -3481,6 +3512,10 @@ a.nav-pill:hover {
     width: 2px;
     height: 18px;
     margin-left: 28px;
+  }
+
+  .amd-cycle-videos-grid {
+    grid-template-columns: 1fr;
   }
 
   .protocol-grid {
