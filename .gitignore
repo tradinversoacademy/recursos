@@ -2,3 +2,6 @@ tmp/
 .pnpm-store/
 __pycache__/
 *.pyc
+
+# Material privado que no debe publicarse
+analisis-completo-estrategia-colores-tradinverso.pdf
