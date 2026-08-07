@@ -62,8 +62,8 @@ function appendLead(body) {
 
   sheet.appendRow([
     parseLeadDate(body.fecha),
-    body.nombre || "",
-    body.email || "",
+    String(body.nombre || "").trim(),
+    String(body.email || "").trim().toLowerCase(),
     body.recurso || "",
     body.origen || "",
     body.campana || body.campaña || "",
@@ -71,6 +71,10 @@ function appendLead(body) {
     body.estado || "nuevo",
     body.notas || ""
   ]);
+
+  // Asegura el formato de fecha en la fila recién añadida,
+  // independientemente de la configuración regional.
+  sheet.getRange(sheet.getLastRow(), 1).setNumberFormat("yyyy-mm-dd hh:mm");
 }
 
 function parseLeadDate(value) {
@@ -141,15 +145,29 @@ function setupSummarySheet(spreadsheet) {
   sheet.getRange("A1").setValue("Resumen leads TRADINVERSO");
   sheet.getRange("A3").setValue("Total leads");
   sheet.getRange("B3").setFormula("=CONTARA(Leads!C2:C)");
-  sheet.getRange("A4").setValue("Último lead");
-  sheet.getRange("B4").setFormula("=SI(CONTARA(Leads!A2:A)=0;\"\";MAX(Leads!A2:A))");
-  sheet.getRange("A6").setValue("Leads por recurso");
-  sheet.getRange("A7").setFormula("=SI(CONTARA(Leads!C2:C)=0;\"Sin datos\";QUERY(Leads!A2:I;\"select D, count(C) where C is not null group by D label D 'recurso', count(C) 'leads'\";0))");
+  sheet.getRange("A4").setValue("Personas únicas");
+  sheet.getRange("B4").setFormula("=SI(CONTARA(Leads!C2:C)=0;0;CONTARA(UNIQUE(Leads!C2:C)))");
+  sheet.getRange("A5").setValue("Últimos 7 días");
+  sheet.getRange("B5").setFormula("=CONTAR.SI(Leads!A2:A;\">\"&(AHORA()-7))");
+  sheet.getRange("A6").setValue("Último lead");
+  sheet.getRange("B6").setFormula("=SI(CONTARA(Leads!A2:A)=0;\"\";MAX(Leads!A2:A))");
+  sheet.getRange("B6").setNumberFormat("yyyy-mm-dd hh:mm");
+
+  sheet.getRange("A8").setValue("Leads por recurso");
+  sheet.getRange("A9").setFormula("=SI(CONTARA(Leads!C2:C)=0;\"Sin datos\";QUERY(Leads!A2:I;\"select D, count(C) where C is not null group by D order by count(C) desc label D 'recurso', count(C) 'leads'\";0))");
+
+  sheet.getRange("D8").setValue("Leads por estado");
+  sheet.getRange("D9").setFormula("=SI(CONTARA(Leads!C2:C)=0;\"Sin datos\";QUERY(Leads!A2:I;\"select H, count(C) where C is not null group by H order by count(C) desc label H 'estado', count(C) 'leads'\";0))");
+
   sheet.getRange("A1:B1")
     .setFontWeight("bold")
     .setFontColor("#ffffff")
     .setBackground("#06245c");
-  sheet.getRange("A3:B7").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
-  sheet.setColumnWidth(1, 220);
+  sheet.getRange("A8").setFontWeight("bold");
+  sheet.getRange("D8").setFontWeight("bold");
+  sheet.getRange("A3:B6").setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
+  sheet.setColumnWidth(1, 240);
   sheet.setColumnWidth(2, 140);
+  sheet.setColumnWidth(4, 180);
+  sheet.setColumnWidth(5, 100);
 }

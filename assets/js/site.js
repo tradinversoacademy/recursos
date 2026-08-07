@@ -15,20 +15,13 @@
     return null;
   }
 
-  function getCampaign() {
-    return getResourceSlug() || "biblioteca";
-  }
-
   function decorateLinks(root) {
     var scope = root || document;
-    var campaign = getCampaign();
     scope.querySelectorAll('a[href*="clase.tradinverso.com"], a[href*="calendly.com"]').forEach(function (link) {
       try {
         var url = new URL(link.href);
         if (url.searchParams.get("utm_source")) return;
         url.searchParams.set("utm_source", "recursos");
-        url.searchParams.set("utm_medium", "web");
-        url.searchParams.set("utm_campaign", campaign);
         link.href = url.toString();
       } catch (error) {
         // Un enlace malformado no debe romper el resto de la página.
