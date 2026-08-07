@@ -5,6 +5,9 @@
     var container = document.querySelector("[data-resource-list]");
     var catalog = window.TRADINVERSO_RESOURCES || [];
     if (!container || !catalog.length) return;
+    // tools/build_library.py deja las tarjetas ya escritas en el HTML para que
+    // sean indexables. Solo se generan aquí si por lo que sea faltan.
+    if (container.querySelector("[data-resource-card]")) return;
 
     catalog.filter(function (resource) {
       return !resource.hidden;

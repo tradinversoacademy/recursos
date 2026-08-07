@@ -322,6 +322,10 @@
               if (hideAfterSuccess) hideAfterSuccess.hidden = true;
               target.scrollIntoView({ behavior: "smooth", block: "start" });
             }
+            // El contenido revelado no es el final del recorrido: el lead
+            // también debe encontrar la clase gratuita más abajo.
+            const promo = document.querySelector("[data-masterclass-promo]");
+            if (promo && promo !== target) promo.hidden = false;
             return;
           }
 

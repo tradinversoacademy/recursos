@@ -42,6 +42,27 @@ function doGet(e) {
 }
 
 function appendLead(body) {
+  // Dos formularios enviados a la vez pueden escribir en la misma fila y
+  // perder un lead. El bloqueo los serializa.
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(20000);
+  } catch (error) {
+    // Si el bloqueo no llega a tiempo, es preferible escribir que perder el lead.
+  }
+
+  try {
+    writeLead(body);
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (error) {
+      // El bloqueo puede haber expirado por su cuenta.
+    }
+  }
+}
+
+function writeLead(body) {
   const sheet = getLeadSheet();
 
   sheet.appendRow([
