@@ -246,6 +246,7 @@
           nombre: String(data.get("nombre") || "").trim(),
           email: String(data.get("email") || "").trim(),
           recurso: form.dataset.recurso || "recurso-sin-nombre",
+          via: form.dataset.libraryAccess !== undefined ? "biblioteca" : "recurso",
           origen: String(data.get("origen") || params.origen || "organico"),
           consentimiento: data.get("consentimiento") ? "si" : "no",
           notas: ""

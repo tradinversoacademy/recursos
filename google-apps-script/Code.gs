@@ -8,6 +8,7 @@ const HEADERS = [
   "nombre",
   "email",
   "recurso",
+  "via",
   "origen",
   "consentimiento",
   "repetido",
@@ -70,6 +71,7 @@ function writeLead(body) {
     String(body.nombre || "").trim(),
     String(body.email || "").trim().toLowerCase(),
     body.recurso || "",
+    body.via || "recurso",
     body.origen || "",
     body.consentimiento || "",
     "",
@@ -235,6 +237,26 @@ function migrateLeadSheet(sheet) {
       sheet.getRange(1, notasIndex + 1).setValue("repetido");
     }
   }
+
+  // Columna "via": distingue quien entra por la biblioteca de quien llega a un
+  // recurso suelto desde un Reel. Los leads anteriores son todos de recurso.
+  const current = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+    .map(function (value) { return String(value).trim().toLowerCase(); });
+  if (current.indexOf("via") === -1 && firstRow.join("") !== "") {
+    const recursoIndex = current.indexOf("recurso");
+    if (recursoIndex !== -1) {
+      sheet.insertColumnAfter(recursoIndex + 1);
+      sheet.getRange(1, recursoIndex + 2).setValue("via");
+      const rows = sheet.getLastRow() - 1;
+      if (rows > 0) {
+        const historico = [];
+        for (var i = 0; i < rows; i++) {
+          historico.push(["recurso"]);
+        }
+        sheet.getRange(2, recursoIndex + 2, rows, 1).setValues(historico);
+      }
+    }
+  }
 }
 
 function setupLeadSheet(sheet) {
@@ -254,14 +276,15 @@ function setupLeadSheet(sheet) {
   sheet.getRange(1, 1, sheet.getMaxRows(), HEADERS.length)
     .setBorder(true, true, true, true, true, true, "#d9e6fb", SpreadsheetApp.BorderStyle.SOLID);
   sheet.getRange(2, 1, Math.max(sheet.getMaxRows() - 1, 1), 1).setNumberFormat("yyyy-mm-dd hh:mm");
-  sheet.setColumnWidth(1, 165);
-  sheet.setColumnWidth(2, 150);
-  sheet.setColumnWidth(3, 230);
-  sheet.setColumnWidth(4, 210);
-  sheet.setColumnWidth(5, 130);
-  sheet.setColumnWidth(6, 145);
-  sheet.setColumnWidth(7, 110);
-  sheet.setColumnWidth(8, 260);
+  sheet.setColumnWidth(1, 165);  // fecha
+  sheet.setColumnWidth(2, 150);  // nombre
+  sheet.setColumnWidth(3, 230);  // email
+  sheet.setColumnWidth(4, 210);  // recurso
+  sheet.setColumnWidth(5, 110);  // via
+  sheet.setColumnWidth(6, 130);  // origen
+  sheet.setColumnWidth(7, 145);  // consentimiento
+  sheet.setColumnWidth(8, 110);  // repetido
+  sheet.setColumnWidth(9, 260);  // notas
 
   if (!sheet.getFilter()) {
     sheet.getRange(1, 1, sheet.getMaxRows(), HEADERS.length).createFilter();
@@ -274,8 +297,9 @@ function updateRepeatSignals(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return;
 
-  const emailColumn = 3;
-  const repeatColumn = 7;
+  // Los índices siguen el orden de HEADERS para no romperse al añadir columnas.
+  const emailColumn = HEADERS.indexOf("email") + 1;
+  const repeatColumn = HEADERS.indexOf("repetido") + 1;
   const emails = sheet.getRange(2, emailColumn, lastRow - 1, 1).getValues();
   const counts = {};
 
@@ -305,6 +329,7 @@ function setupSummarySheet(spreadsheet) {
 
   const byEmail = {};
   const byResource = {};
+  const byVia = {};
   let lastDate = null;
   let lastSevenDays = 0;
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -313,9 +338,11 @@ function setupSummarySheet(spreadsheet) {
     const date = row[0] instanceof Date ? row[0] : new Date(row[0]);
     const email = String(row[2]).trim().toLowerCase();
     const resource = String(row[3] || "(sin recurso)");
+    const via = String(row[4] || "recurso");
 
     byEmail[email] = (byEmail[email] || 0) + 1;
     byResource[resource] = (byResource[resource] || 0) + 1;
+    byVia[via] = (byVia[via] || 0) + 1;
     if (!Number.isNaN(date.getTime())) {
       if (!lastDate || date > lastDate) lastDate = date;
       if (date > weekAgo) lastSevenDays += 1;
@@ -344,6 +371,15 @@ function setupSummarySheet(spreadsheet) {
   if (lastDate) {
     sheet.getRange("B7").setValue(lastDate).setNumberFormat("yyyy-mm-dd hh:mm");
   }
+
+  sheet.getRange("D3").setValue("Cómo entraron");
+  const viaRows = sorted(byVia);
+  if (viaRows.length) {
+    sheet.getRange(4, 4, viaRows.length, 2).setValues(viaRows);
+  }
+  sheet.getRange("D3").setFontWeight("bold");
+  sheet.setColumnWidth(4, 160);
+  sheet.setColumnWidth(5, 100);
 
   sheet.getRange("A9").setValue("Leads por recurso");
   const resourceRows = sorted(byResource);
