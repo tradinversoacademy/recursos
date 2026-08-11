@@ -23,8 +23,7 @@ window.TRADINVERSO_RESOURCES = [
     type: "Programa completo",
     category: "programa",
     search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
-    cta: "Ver el programa",
-    featured: true
+    cta: "Ver el programa"
   },
   {
     slug: "orb-nasdaq",
@@ -34,7 +33,8 @@ window.TRADINVERSO_RESOURCES = [
     type: "Operativa",
     category: "operativas",
     search: "estrategia orb nasdaq apertura rango cinco minutos operativa",
-    cta: "Abrir recurso"
+    cta: "Abrir recurso",
+    featured: true
   },
   {
     slug: "rango-asiatico",
@@ -44,7 +44,8 @@ window.TRADINVERSO_RESOURCES = [
     type: "Operativa",
     category: "operativas",
     search: "rango asiatico asia manipulacion sesion operativa",
-    cta: "Abrir recurso"
+    cta: "Abrir recurso",
+    featured: true
   },
   {
     slug: "amd",

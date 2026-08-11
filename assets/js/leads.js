@@ -278,6 +278,15 @@
             window.tradinversoDecorateLinks(document);
           }
 
+          // Registro desde la portada: concede el pase a toda la biblioteca.
+          if (form.dataset.libraryAccess !== undefined) {
+            if (window.TradinversoAccess) window.TradinversoAccess.grantPass(payload);
+            if (status) status.textContent = "Acceso concedido. Ya puedes entrar a todos los recursos.";
+            if (submitButton) submitButton.disabled = false;
+            document.dispatchEvent(new CustomEvent("tradinverso:library-unlocked"));
+            return;
+          }
+
           if (calendly) {
             const calendlyUrl = buildCalendlyUrl(calendly, payload);
             if (status) status.textContent = "Abriendo el calendario con tus datos...";

@@ -1,6 +1,89 @@
 (function () {
   "use strict";
 
+  var access = window.TradinversoAccess;
+
+  // La biblioteca tiene dos modos sobre el mismo HTML: escaparate con la puerta
+  // cerrada, o biblioteca abierta. Las tarjetas están siempre en el HTML para
+  // que Google las vea; sin pase simplemente no dejan pasar.
+  function applyAccessMode() {
+    var gate = document.querySelector("[data-library-gate]");
+    var controls = document.querySelector("[data-library-controls]");
+    var sections = Array.from(document.querySelectorAll("[data-resource-section]"));
+    var unlocked = !access || access.hasPass();
+
+    if (gate) gate.hidden = unlocked;
+    if (controls) controls.hidden = !unlocked;
+    sections.forEach(function (section) {
+      section.classList.toggle("is-locked", !unlocked);
+    });
+
+    if (unlocked) return;
+
+    var known = access ? access.getKnownProfile() : null;
+    var knownBlock = document.querySelector("[data-gate-known]");
+    var form = document.querySelector("[data-gate-form]");
+
+    if (known && knownBlock && form) {
+      var name = document.querySelector("[data-gate-known-name]");
+      if (name) name.textContent = "Hola, " + known.nombre;
+      knownBlock.hidden = false;
+      form.hidden = true;
+
+      var button = document.querySelector("[data-gate-known-button]");
+      if (button) {
+        button.addEventListener("click", function () {
+          var status = document.querySelector("[data-gate-known-status]");
+          if (status) status.textContent = "Abriendo la biblioteca...";
+          button.disabled = true;
+          // Se reutiliza el formulario para que el acceso quede registrado
+          // igual que cualquier otro lead.
+          form.querySelector('[name="nombre"]').value = known.nombre;
+          form.querySelector('[name="email"]').value = known.email;
+          form.querySelector('[name="consentimiento"]').checked = true;
+          form.hidden = false;
+          form.requestSubmit();
+          form.hidden = true;
+        });
+      }
+
+      var switchButton = document.querySelector("[data-gate-switch]");
+      if (switchButton) {
+        switchButton.addEventListener("click", function () {
+          knownBlock.hidden = true;
+          form.hidden = false;
+          form.querySelectorAll(".field").forEach(function (field) {
+            field.hidden = false;
+          });
+          var returning = form.querySelector(".returning-lead");
+          if (returning) returning.remove();
+          var consent = form.querySelector(".consent");
+          if (consent) consent.hidden = false;
+          form.reset();
+        });
+      }
+    }
+
+    // Sin pase, las tarjetas enseñan lo que hay pero llevan a la puerta.
+    document.querySelectorAll("[data-resource-card] a").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        if (access && access.hasPass()) return;
+        event.preventDefault();
+        if (gate) {
+          gate.hidden = false;
+          gate.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+    });
+  }
+
+  // leads.js avisa cuando el registro concede el pase.
+  document.addEventListener("tradinverso:library-unlocked", function () {
+    applyAccessMode();
+    var heading = document.querySelector(".library-intro h1");
+    if (heading) heading.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
   function renderLibraryCards() {
     var container = document.querySelector("[data-resource-list]");
     var catalog = window.TRADINVERSO_RESOURCES || [];
@@ -117,4 +200,5 @@
   }
 
   updateLibrary();
+  applyAccessMode();
 })();

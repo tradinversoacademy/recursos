@@ -2340,7 +2340,7 @@ a.nav-pill:hover {
 
 .featured-library-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
 }
 
@@ -2612,6 +2612,179 @@ a.nav-pill:hover {
 .library-closing-promo {
   width: min(1160px, calc(100% - 32px));
   margin: 12px auto 48px;
+}
+
+/* Portadas de las dos operativas destacadas. */
+.orb-cover {
+  background: linear-gradient(145deg, #06245c, #1268c7);
+}
+
+.orb-mini-range {
+  position: relative;
+  width: 100%;
+  height: 104px;
+  border-top: 2px solid rgba(255, 255, 255, 0.7);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+  background: rgba(93, 178, 255, 0.14);
+}
+
+.orb-mini-range span {
+  position: absolute;
+  left: 12%;
+  top: 20px;
+  width: 42%;
+  height: 60px;
+  border: 2px solid var(--sky);
+}
+
+.orb-mini-range i {
+  position: absolute;
+  left: 54%;
+  top: 44px;
+  width: 38%;
+  border-top: 6px solid var(--sky);
+  transform: rotate(-24deg);
+}
+
+.asia-cover {
+  background:
+    linear-gradient(rgba(3, 23, 59, 0.86), rgba(6, 36, 92, 0.96)),
+    linear-gradient(135deg, #2d89ff, #03173b);
+}
+
+.asia-range-mark {
+  position: relative;
+  width: 100%;
+  height: 104px;
+  border-top: 2px solid rgba(93, 178, 255, 0.8);
+  border-bottom: 2px solid rgba(93, 178, 255, 0.8);
+  background: rgba(93, 178, 255, 0.1);
+}
+
+.asia-range-mark span {
+  position: absolute;
+  left: 18%;
+  top: -14px;
+  width: 34%;
+  height: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-bottom: 0;
+}
+
+.asia-range-mark i {
+  position: absolute;
+  left: 58%;
+  top: 24px;
+  width: 34%;
+  border-top: 6px solid var(--sky);
+  transform: rotate(18deg);
+}
+
+.library-gate {
+  width: min(1160px, calc(100% - 32px));
+  margin: 0 auto 40px;
+}
+
+.library-gate .lead-panel {
+  border-top: 9px solid var(--blue);
+}
+
+.gate-known {
+  display: grid;
+  gap: 14px;
+}
+
+.gate-switch {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.gate-switch:hover {
+  color: var(--blue);
+}
+
+/* Escaparate: se ve todo lo que hay, pero la puerta está cerrada.
+   En este modo las tarjetas se compactan para que el catálogo entero
+   quepa de un vistazo, en vez de empujar la lista fuera de pantalla. */
+.is-locked .resource-list-card,
+.is-locked .library-card {
+  position: relative;
+}
+
+.is-locked .featured-library-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.is-locked .featured-library-grid .library-card-featured {
+  grid-template-rows: 96px minmax(0, 1fr);
+  min-height: 0;
+}
+
+.is-locked .featured-library-grid .library-card-featured .resource-cover,
+.is-locked .resource-cover {
+  min-height: 96px;
+  padding: 16px 18px;
+}
+
+.is-locked .resource-cover .cover-label {
+  font-size: 11px;
+}
+
+/* Los adornos de las portadas sobran cuando la tarjeta es pequeña. */
+.is-locked .system-mark,
+.is-locked .c3-mark,
+.is-locked .orb-mini-range,
+.is-locked .asia-range-mark,
+.is-locked .program-stack,
+.is-locked .featured-library-grid .library-card-featured .resource-meta,
+.is-locked .featured-library-grid .library-card-featured p {
+  display: none;
+}
+
+.is-locked .resource-cover > strong {
+  font-size: 16px;
+}
+
+.is-locked .featured-library-grid .library-card-featured .library-card-body {
+  padding: 16px 18px 18px;
+}
+
+.is-locked .featured-library-grid .library-card-featured h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.is-locked .featured-library-grid .library-card-featured .primary-button {
+  min-height: 42px;
+  padding: 9px 14px;
+  font-size: 14px;
+}
+
+.is-locked .section-heading {
+  margin-bottom: 14px;
+}
+
+.is-locked .resource-list-card a,
+.is-locked .library-card a {
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.is-locked .resource-list-card a::after,
+.is-locked .library-card-body a::after {
+  content: " 🔒";
+  font-size: 0.9em;
+}
+
+.is-locked .library-card-featured .primary-button::after {
+  content: "";
 }
 
 .amd-cycle-videos {

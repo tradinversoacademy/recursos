@@ -182,9 +182,92 @@
     footer.parentElement.insertBefore(section, footer);
   }
 
+  // Quien tiene el pase de biblioteca ya se registró: en los recursos no se le
+  // vuelve a pedir nada, solo se le da lo que venía a buscar.
+  function initLibraryPass() {
+    var access = window.TradinversoAccess;
+    if (!access || !access.hasPass()) return;
+
+    var pass = access.getPass();
+
+    document.querySelectorAll("[data-lead-form]").forEach(function (form) {
+      if (form.dataset.libraryAccess !== undefined) return;
+
+      var panel = form.closest(".lead-panel") || form.parentElement;
+      var download = form.dataset.download
+        || (/\.pdf(?:$|[?#])/i.test(form.dataset.redirect || "") ? form.dataset.redirect : "");
+      var calendly = form.dataset.calendly || "";
+      var redirect = form.dataset.redirect || "";
+
+      var unlocked = document.createElement("div");
+      unlocked.className = "gate-known";
+
+      var identity = document.createElement("div");
+      identity.className = "returning-lead";
+      identity.innerHTML = '<div class="returning-lead-copy">'
+        + "<span>Acceso completo</span>"
+        + "<strong></strong>"
+        + "<small>Tienes la biblioteca desbloqueada. Este recurso es tuyo.</small>"
+        + "</div>";
+      identity.querySelector("strong").textContent = "Hola, " + pass.nombre;
+      unlocked.appendChild(identity);
+
+      var action = document.createElement("a");
+      action.className = "primary-button";
+
+      if (download) {
+        action.href = download;
+        action.setAttribute("download", form.dataset.downloadName || "");
+        action.textContent = "Descargar ahora ";
+      } else if (calendly) {
+        var url = calendly;
+        try {
+          var parsed = new URL(calendly);
+          parsed.searchParams.set("name", pass.nombre);
+          parsed.searchParams.set("email", pass.email);
+          url = parsed.toString();
+        } catch (error) {
+          // Se usa el enlace tal cual.
+        }
+        action.href = url;
+        action.target = "_blank";
+        action.rel = "noopener";
+        action.textContent = "Elegir día y hora ";
+      } else if (redirect.startsWith("#")) {
+        action.href = redirect;
+        action.textContent = "Ver el contenido ";
+        action.addEventListener("click", function (event) {
+          event.preventDefault();
+          var target = document.querySelector(redirect);
+          var hideAfter = form.dataset.hideAfterSuccess
+            ? document.querySelector(form.dataset.hideAfterSuccess)
+            : null;
+          if (target) {
+            target.hidden = false;
+            if (hideAfter) hideAfter.hidden = true;
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      } else {
+        action.href = redirect || "recurso.html";
+        action.textContent = "Abrir el recurso ";
+      }
+
+      var arrow = document.createElement("span");
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      action.appendChild(arrow);
+      unlocked.appendChild(action);
+
+      form.hidden = true;
+      panel.appendChild(unlocked);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTopbarCta();
     initRelatedResources();
+    initLibraryPass();
     decorateLinks(document);
   });
 })();

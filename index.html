@@ -20,7 +20,7 @@
     <meta name="twitter:image" content="https://tradinversoacademy.github.io/recursos/assets/img/social/biblioteca.png?v=20260807-2">
     <link rel="canonical" href="https://tradinversoacademy.github.io/recursos/">
     <link rel="icon" href="assets/img/tradinverso-icon.png">
-    <link rel="stylesheet" href="assets/css/base.css?v=20260807-6">
+    <link rel="stylesheet" href="assets/css/base.css?v=20260807-8">
   </head>
   <body>
     <main class="site-shell">
@@ -43,7 +43,50 @@
         </div>
       </section>
 
-      <section class="library-controls" aria-label="Buscar y filtrar recursos">
+      <!-- Puerta de acceso: solo se muestra a quien todavía no tiene el pase. -->
+      <section class="library-gate" data-library-gate hidden>
+        <aside class="lead-panel featured" aria-label="Formulario de acceso a la biblioteca">
+          <div class="compact-download-heading">
+            <span class="section-kicker">Acceso gratuito</span>
+            <h2>Desbloquea la biblioteca completa</h2>
+            <p>Un solo registro y entras a todos los recursos: vídeos, guías descargables, checklists y herramientas. Sin volver a rellenar nada.</p>
+          </div>
+
+          <!-- A quien ya se registró en algún recurso le basta un clic. -->
+          <div class="gate-known" data-gate-known hidden>
+            <div class="returning-lead">
+              <div class="returning-lead-copy">
+                <span>Ya te conocemos</span>
+                <strong data-gate-known-name>Hola</strong>
+                <small>No hace falta que vuelvas a escribir tus datos.</small>
+              </div>
+            </div>
+            <button class="primary-button" type="button" data-gate-known-button>Entrar a la biblioteca <span aria-hidden="true">→</span></button>
+            <button class="gate-switch" type="button" data-gate-switch>No soy yo</button>
+            <div class="form-status" data-gate-known-status aria-live="polite"></div>
+          </div>
+
+          <form class="form-grid" data-lead-form data-library-access data-recurso="biblioteca-completa" data-gate-form>
+            <input type="hidden" name="origen" value="organico">
+            <div class="field">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="nombre" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <label class="consent" for="consentimiento">
+              <input id="consentimiento" name="consentimiento" type="checkbox" required>
+              <span>Acepto recibir estos recursos y comunicaciones relacionadas con TRADINVERSO. Podré darme de baja cuando quiera.</span>
+            </label>
+            <button class="primary-button" type="submit">Acceder a los recursos <span aria-hidden="true">→</span></button>
+            <div class="form-status" data-form-status aria-live="polite"></div>
+          </form>
+        </aside>
+      </section>
+
+      <section class="library-controls" aria-label="Buscar y filtrar recursos" data-library-controls hidden>
         <label class="library-search">
           <span>Buscar</span>
           <input type="search" placeholder="Ej. IFVG, mentalidad, Nasdaq..." autocomplete="off" data-library-search>
@@ -92,29 +135,41 @@
                 <strong>C3</strong>
                 <span>Proceso · Consistencia · Resultados</span>
               </div>
-              <strong>El sistema completo</strong>
+              <strong>El camino a la rentabilidad</strong>
             </div>
             <div class="library-card-body">
-              <div class="resource-meta"><span>Sistema formativo</span><span>Vídeo completo</span></div>
+              <div class="resource-meta"><span>El método</span><span>Vídeo completo</span></div>
               <h3>Método C3</h3>
-              <p>El sistema paso a paso con el que el alumno construye un proceso consistente.</p>
+              <p>El método para conseguir ser rentable, paso a paso y con un proceso que puedes repetir.</p>
               <a class="primary-button" href="recursos/metodo-c3/index.html">Ver Método C3 <span aria-hidden="true">→</span></a>
             </div>
           </article>
 
-          <article class="library-card library-card-featured" data-resource-card data-category="programa" data-search="programa tradinverso formacion acompañamiento directos comunidad challenge garantia">
-            <div class="resource-cover program-cover" aria-hidden="true">
-              <span class="cover-label">PROGRAMA TRADINVERSO</span>
-              <div class="program-stack">
-                <span>Formación</span><span>DATA</span><span>Psicología</span><span>Seguimiento</span>
-              </div>
-              <strong>Todo lo que incluye</strong>
+          <article class="library-card library-card-featured" data-resource-card data-category="operativas" data-search="estrategia orb nasdaq apertura rango cinco minutos operativa">
+            <div class="resource-cover orb-cover" aria-hidden="true">
+              <span class="cover-label">OPERATIVA NASDAQ</span>
+              <div class="orb-mini-range"><span></span><i></i></div>
+              <strong>Apertura de Nueva York</strong>
             </div>
             <div class="library-card-body">
-              <div class="resource-meta"><span>Programa completo</span><span>Vídeo Loom</span></div>
-              <h3>Todo lo que incluye TRADINVERSO</h3>
-              <p>Formación, acompañamiento, directos, comunidad y tecnología dentro de un mismo proceso.</p>
-              <a class="primary-button" href="recursos/programa-tradinverso/index.html">Ver el programa <span aria-hidden="true">→</span></a>
+              <div class="resource-meta"><span>Operativa</span><span>Vídeo + guía</span></div>
+              <h3>Estrategia ORB Nasdaq</h3>
+              <p>Rango inicial, confirmación y riesgo en la apertura de Nueva York.</p>
+              <a class="primary-button" href="recursos/orb-nasdaq/index.html">Ver la estrategia <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+
+          <article class="library-card library-card-featured" data-resource-card data-category="operativas" data-search="rango asiatico asia manipulacion sesion operativa">
+            <div class="resource-cover asia-cover" aria-hidden="true">
+              <span class="cover-label">OPERATIVA DE SESIÓN</span>
+              <div class="asia-range-mark"><span></span><i></i></div>
+              <strong>Manipulación del rango</strong>
+            </div>
+            <div class="library-card-body">
+              <div class="resource-meta"><span>Operativa</span><span>Vídeo + guía</span></div>
+              <h3>Manipulación del rango asiático</h3>
+              <p>Contexto, manipulación y ejecución con riesgo definido.</p>
+              <a class="primary-button" href="recursos/rango-asiatico/index.html">Ver la estrategia <span aria-hidden="true">→</span></a>
             </div>
           </article>
         </div>
@@ -131,18 +186,11 @@
         <!-- Generado por tools/build_library.py desde assets/js/resources.js -->
         <div class="resource-list-grid" data-resource-list>
           <!-- resource-list:start -->
-          <article class="resource-list-card" data-resource-card data-category="operativas" data-search="estrategia orb nasdaq apertura rango cinco minutos operativa">
-            <div class="resource-list-top"><span class="resource-symbol">ORB</span><span class="resource-list-type">Operativa</span></div>
-            <h3>Estrategia ORB Nasdaq</h3>
-            <p>Rango inicial, confirmación y riesgo en la apertura de Nueva York.</p>
-            <a href="recursos/orb-nasdaq/index.html">Abrir recurso <span aria-hidden="true">&rarr;</span></a>
-          </article>
-
-          <article class="resource-list-card" data-resource-card data-category="operativas" data-search="rango asiatico asia manipulacion sesion operativa">
-            <div class="resource-list-top"><span class="resource-symbol">AS</span><span class="resource-list-type">Operativa</span></div>
-            <h3>Manipulación del rango asiático</h3>
-            <p>Contexto, manipulación y ejecución con riesgo definido.</p>
-            <a href="recursos/rango-asiatico/index.html">Abrir recurso <span aria-hidden="true">&rarr;</span></a>
+          <article class="resource-list-card" data-resource-card data-category="programa" data-search="programa tradinverso formacion acompañamiento directos comunidad challenge garantia">
+            <div class="resource-list-top"><span class="resource-symbol">PT</span><span class="resource-list-type">Programa completo</span></div>
+            <h3>Todo lo que incluye TRADINVERSO</h3>
+            <p>Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.</p>
+            <a href="recursos/programa-tradinverso/index.html">Ver el programa <span aria-hidden="true">&rarr;</span></a>
           </article>
 
           <article class="resource-list-card" data-resource-card data-category="operativas" data-search="amd acumulacion manipulacion distribucion asia londres nueva york sesiones ciclo confirmaciones">
@@ -252,8 +300,11 @@
         </div>
       </footer>
     </main>
-    <script src="assets/js/resources.js?v=20260807-6"></script>
-    <script src="assets/js/site.js?v=20260807-6"></script>
-    <script src="assets/js/library.js?v=20260807-6"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/access.js?v=20260807-8"></script>
+    <script src="assets/js/resources.js?v=20260807-8"></script>
+    <script src="assets/js/site.js?v=20260807-8"></script>
+    <script src="assets/js/library.js?v=20260807-8"></script>
+    <script src="assets/js/leads.js?v=20260807-8"></script>
   </body>
 </html>
