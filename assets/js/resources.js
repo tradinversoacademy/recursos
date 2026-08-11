@@ -16,16 +16,6 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
-    slug: "programa-tradinverso",
-    title: "Todo lo que incluye TRADINVERSO",
-    description: "Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.",
-    symbol: "PT",
-    type: "Programa completo",
-    category: "programa",
-    search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
-    cta: "Ver el programa"
-  },
-  {
     slug: "orb-nasdaq",
     title: "Estrategia ORB Nasdaq",
     description: "Rango inicial, confirmación y riesgo en la apertura de Nueva York.",
@@ -106,6 +96,16 @@ window.TRADINVERSO_RESOURCES = [
     category: "operativas",
     search: "ifvg inverse fair value gap giro cambio intencion operativa",
     cta: "Abrir recurso"
+  },
+  {
+    slug: "programa-tradinverso",
+    title: "Todo lo que incluye TRADINVERSO",
+    description: "Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.",
+    symbol: "PT",
+    type: "Programa completo",
+    category: "programa",
+    search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
+    cta: "Ver el programa"
   },
   {
     slug: "data-tradinverso",

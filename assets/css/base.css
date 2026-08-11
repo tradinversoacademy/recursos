@@ -2727,6 +2727,14 @@ a.nav-pill:hover {
   min-height: 0;
 }
 
+/* Las destacadas conservan su resumen, como las de la lista. */
+.is-locked .featured-library-grid .library-card-featured p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .is-locked .featured-library-grid .library-card-featured .resource-cover,
 .is-locked .resource-cover {
   min-height: 96px;
@@ -2743,8 +2751,7 @@ a.nav-pill:hover {
 .is-locked .orb-mini-range,
 .is-locked .asia-range-mark,
 .is-locked .program-stack,
-.is-locked .featured-library-grid .library-card-featured .resource-meta,
-.is-locked .featured-library-grid .library-card-featured p {
+.is-locked .featured-library-grid .library-card-featured .resource-meta {
   display: none;
 }
 
