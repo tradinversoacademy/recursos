@@ -367,6 +367,9 @@ function setupSummarySheet(spreadsheet) {
   sheet.getRange("B5").setValue(repeaters);
   sheet.getRange("A6").setValue("Últimos 7 días");
   sheet.getRange("B6").setValue(lastSevenDays);
+  // Las métricas son recuentos: sin esto heredan el formato de fecha que
+  // pudiera tener la celda de una versión anterior del resumen.
+  sheet.getRange("B3:B6").setNumberFormat("0");
   sheet.getRange("A7").setValue("Último lead");
   if (lastDate) {
     sheet.getRange("B7").setValue(lastDate).setNumberFormat("yyyy-mm-dd hh:mm");
