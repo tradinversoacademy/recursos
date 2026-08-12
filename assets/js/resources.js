@@ -59,12 +59,12 @@ window.TRADINVERSO_RESOURCES = [
   },
   {
     slug: "manipulacion-maximos-minimos",
-    title: "Manipulación de máximos y mínimos",
-    description: "Toma de liquidez del día anterior y confirmación en temporalidad baja.",
-    symbol: "PD",
+    title: "El precio va a por la liquidez",
+    description: "Por qué busca tus stops, dónde se acumulan y cómo entrar al lado contrario del barrido.",
+    symbol: "LIQ",
     type: "Operativa",
     category: "operativas",
-    search: "manipulacion maximos minimos dia anterior liquidez fvg ifvg envolvente estructura operativa",
+    search: "liquidez stops instituciones manipulacion maximos minimos semanal diario sesion barrido giro fvg ifvg envolvente estructura operativa",
     cta: "Abrir recurso"
   },
   {

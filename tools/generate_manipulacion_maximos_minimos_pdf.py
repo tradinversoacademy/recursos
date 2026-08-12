@@ -181,7 +181,7 @@ def checklist_row(c, y, number, text):
 def build():
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(OUTPUT), pagesize=A4)
-    c.setTitle("Manipulación de máximos y mínimos del día anterior - TRADINVERSO")
+    c.setTitle("El precio va a por la liquidez - TRADINVERSO")
     c.setAuthor("TRADINVERSO")
 
     # Cover
@@ -197,13 +197,13 @@ def build():
     c.drawString(40, H - 170, "LIQUIDEZ - ESTRUCTURA - CONFIRMACIÓN")
     c.setFillColor(white)
     c.setFont("Helvetica-Bold", 30)
-    c.drawString(40, H - 220, "MANIPULACIÓN DE")
-    c.drawString(40, H - 260, "MÁXIMOS Y MÍNIMOS")
+    c.drawString(40, H - 220, "EL PRECIO VA A POR")
+    c.drawString(40, H - 260, "LA LIQUIDEZ")
     c.setFont("Helvetica-Bold", 19)
-    c.drawString(40, H - 294, "DEL DÍA ANTERIOR")
+    c.drawString(40, H - 294, "MÁXIMOS Y MÍNIMOS: BARRIDO Y GIRO")
     paragraph(
         c,
-        "Un modelo mecánico para esperar la toma de liquidez y ejecutar únicamente cuando el precio confirma el cambio de intención.",
+        "Por qué el precio busca tus stops, en qué niveles se acumula la liquidez y cómo entrar al lado contrario del barrido.",
         40,
         H - 338,
         W - 80,
@@ -232,11 +232,92 @@ def build():
     c.drawString(40, 49, "Recurso educativo - davidrosell.fx")
     c.showPage()
 
-    # Page 2
-    page_base(c, "El modelo", 2)
+    # Page 2 - Por qué el precio busca la liquidez
+    page_base(c, "El porqué", 2)
     page_title(
         c,
-        "01 - Contexto",
+        "01 - La razón de fondo",
+        "El precio busca tus stops",
+        "El movimiento hacia ciertos niveles no es casualidad. Las instituciones necesitan contrapartida para ejecutar y esa contrapartida está donde se acumulan las órdenes del resto.",
+    )
+    reasons = [
+        ("Necesitan contrapartida", "Una institución no puede comprar o vender cuando quiere: para mover un tamaño grande necesita que haya alguien al otro lado de la operación."),
+        ("Esa contrapartida son los stops", "El trader minorista agrupa sus stops en los mismos niveles evidentes. Ahí se concentra el volumen de órdenes que hace falta."),
+        ("Por eso el precio va hacia ahí", "El precio se dirige a la zona con más liquidez, la captura y después desarrolla el movimiento real. Cuanta más liquidez, más atracción."),
+    ]
+    y = H - 235
+    for index, (title, text) in enumerate(reasons):
+        c.setFillColor(PAPER)
+        c.setStrokeColor(LINE)
+        c.roundRect(38, y - 96, W - 76, 96, 7, fill=1, stroke=1)
+        c.setFillColor(BLUE)
+        c.roundRect(54, y - 42, 32, 26, 5, fill=1, stroke=0)
+        c.setFillColor(white)
+        c.setFont("Helvetica-Bold", 10)
+        c.drawCentredString(70, y - 34, f"0{index + 1}")
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 14.5)
+        c.drawString(100, y - 34, title)
+        paragraph(c, text, 54, y - 62, W - 130, size=9.4, leading=12.6)
+        y -= 112
+
+    c.setFillColor(DARK)
+    c.roundRect(38, 108, W - 76, 96, 7, fill=1, stroke=0)
+    c.setFillColor(SKY)
+    c.setFont("Helvetica-Bold", 8.5)
+    c.drawString(54, 176, "IDEA CENTRAL")
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 15.5)
+    c.drawString(54, 150, "La liquidez funciona como un imán.")
+    paragraph(c, "Cuanta más se acumula en un nivel, más fuerte es la atracción que ejerce sobre el precio.", 54, 128, W - 108, size=9.5, leading=13, color=Color(1, 1, 1, 0.76))
+    c.showPage()
+
+    # Page 3 - Dónde está la liquidez que importa
+    page_base(c, "Los niveles", 3)
+    page_title(
+        c,
+        "02 - Dónde mirar",
+        "No todos los niveles valen lo mismo",
+        "La liquidez que mueve el precio no está en cualquier swing: está en los niveles que mira todo el mundo. Márcalos por orden de peso.",
+    )
+    levels = [
+        ("SEMANAL", "Máximo y mínimo de la semana", "El nivel con más traders posicionados y, por tanto, con más liquidez acumulada."),
+        ("DIARIO", "Máximo y mínimo del día anterior", "La referencia que casi todo el mundo tiene marcada al abrir la sesión."),
+        ("SESIÓN", "Máximo y mínimo de cada sesión", "Asia, Londres y Nueva York dejan extremos que la siguiente sesión suele buscar."),
+    ]
+    tones = [BLUE, HexColor("#1F6FD6"), NAVY]
+    y = H - 240
+    for (tag, title, text), tone in zip(levels, tones):
+        c.setFillColor(PAPER)
+        c.setStrokeColor(LINE)
+        c.roundRect(38, y - 92, W - 76, 92, 7, fill=1, stroke=1)
+        c.setFillColor(tone)
+        c.roundRect(38, y - 92, 104, 92, 7, fill=1, stroke=0)
+        c.setFillColor(white)
+        c.setFont("Helvetica-Bold", 11)
+        c.drawCentredString(90, y - 50, tag)
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(160, y - 38, title)
+        paragraph(c, text, 160, y - 58, W - 220, size=9.4, leading=12.6)
+        y -= 108
+
+    c.setFillColor(ICE)
+    c.roundRect(38, 150, W - 76, 74, 7, fill=1, stroke=0)
+    c.setFillColor(BLUE)
+    c.setFont("Helvetica-Bold", 8.5)
+    c.drawString(54, 196, "TAMBIÉN CUENTAN")
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawString(54, 174, "Números redondos y máximos o mínimos evidentes")
+    paragraph(c, "Concentran stops, pero pesan menos que los tres niveles anteriores.", 54, 158, W - 108, size=9.2)
+    c.showPage()
+
+    # Page 4
+    page_base(c, "El modelo", 4)
+    page_title(
+        c,
+        "03 - Contexto",
         "El modelo en cuatro pasos",
         "No necesitas un indicador para localizar el máximo y el mínimo del día anterior. Solo una referencia diaria consistente y paciencia para esperar la reacción.",
     )
@@ -256,11 +337,11 @@ def build():
     paragraph(c, "La operación aparece solo cuando la liquidez ha sido tomada y el precio demuestra intención de volver.", 54, 131, W - 108, size=9.5, leading=13, color=Color(1, 1, 1, 0.76))
     c.showPage()
 
-    # Page 3
-    page_base(c, "Confirmaciones", 3)
+    # Page 5
+    page_base(c, "Confirmaciones", 5)
     page_title(
         c,
-        "02 - Temporalidad baja",
+        "04 - Temporalidad baja",
         "Tres formas de confirmar el giro",
         "El cambio de estructura es la base. FVG, IFVG y vela envolvente son herramientas para validar que el desplazamiento contrario tiene intención real.",
     )
@@ -278,11 +359,11 @@ def build():
     paragraph(c, "Cinco minutos es una referencia práctica. Bajar más solo tiene sentido si tus reglas y tus datos lo justifican.", 54, 99, W - 108, size=8.8, leading=11)
     c.showPage()
 
-    # Page 4
-    page_base(c, "Compra y venta", 4)
+    # Page 6
+    page_base(c, "Compra y venta", 6)
     page_title(
         c,
-        "03 - Lectura direccional",
+        "05 - Lectura direccional",
         "El modelo en compra y venta",
         "Cuando el precio barre el máximo anterior buscamos una confirmación bajista. Cuando barre el mínimo anterior buscamos la confirmación alcista equivalente.",
     )
@@ -299,11 +380,11 @@ def build():
     paragraph(c, "Esperar también es parte del modelo.", 54, 85, W - 108, size=9, color=Color(1, 1, 1, 0.72))
     c.showPage()
 
-    # Page 5
-    page_base(c, "Ejecución", 5)
+    # Page 7
+    page_base(c, "Ejecución", 7)
     page_title(
         c,
-        "04 - Checklist",
+        "06 - Checklist",
         "Antes de ejecutar",
         "Marca cada condición. Si falta contexto, confirmación o invalidación, todavía no existe una operación completa.",
     )
@@ -333,11 +414,11 @@ def build():
     paragraph(c, "Perder una oportunidad cuesta menos que ejecutar una operación que no cumple el modelo.", 54, 106, W - 108, size=9)
     c.showPage()
 
-    # Page 6
-    page_base(c, "Tu proceso", 6)
+    # Page 8
+    page_base(c, "Tu proceso", 8)
     page_title(
         c,
-        "05 - Integración",
+        "07 - Integración",
         "Convierte el modelo en datos",
         "La toma de liquidez del día anterior es una de las estructuras que trabajamos dentro del sistema TRADINVERSO. Su valor aparece cuando se ejecuta con reglas y se registra.",
     )

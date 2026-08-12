@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Manipulación de máximos y mínimos | TRADINVERSO</title>
-    <meta name="description" content="Guía práctica para trabajar la toma de liquidez del máximo o mínimo del día anterior con confirmación en temporalidad baja.">
+    <title>El precio va a por la liquidez | TRADINVERSO</title>
+    <meta name="description" content="Por qué el precio busca los stops, en qué niveles se acumula la liquidez y cómo entrar al lado contrario del barrido. Guía descargable.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="TRADINVERSO">
-    <meta property="og:title" content="Manipulación de máximos y mínimos | TRADINVERSO">
-    <meta property="og:description" content="Marca el día anterior, espera la toma de liquidez y confirma el cambio de estructura antes de ejecutar.">
+    <meta property="og:title" content="El precio va a por la liquidez | TRADINVERSO">
+    <meta property="og:description" content="Las instituciones necesitan tus stops para ejecutar. Aprende dónde se acumulan y cómo operar el giro.">
     <meta property="og:url" content="https://tradinversoacademy.github.io/recursos/recursos/manipulacion-maximos-minimos/">
     <meta property="og:image" content="https://tradinversoacademy.github.io/recursos/assets/img/social/manipulacion-maximos-minimos.png?v=20260807-2">
     <meta property="og:image:secure_url" content="https://tradinversoacademy.github.io/recursos/assets/img/social/manipulacion-maximos-minimos.png?v=20260807-2">
@@ -20,7 +20,7 @@
     <meta name="twitter:image" content="https://tradinversoacademy.github.io/recursos/assets/img/social/manipulacion-maximos-minimos.png?v=20260807-2">
     <link rel="canonical" href="https://tradinversoacademy.github.io/recursos/recursos/manipulacion-maximos-minimos/">
     <link rel="icon" href="../../assets/img/tradinverso-icon.png">
-    <link rel="stylesheet" href="../../assets/css/base.css?v=20260807-8">
+    <link rel="stylesheet" href="../../assets/css/base.css?v=20260811-1">
   </head>
   <body>
     <main class="site-shell">
@@ -33,8 +33,60 @@
 
       <section class="resource-hero contrary-hero liquidity-hero">
         <div class="eyebrow">Liquidez · Estructura · Confirmación</div>
-        <h1>Manipulación de máximos y mínimos del día anterior</h1>
-        <p>Un modelo sencillo para esperar la toma de liquidez y entrar solo cuando el precio confirme el giro.</p>
+        <h1>El precio va a por la liquidez</h1>
+        <p>Se mueve hacia ella como si fuera un imán, y cuanta más liquidez hay en una zona, más atracción ejerce. Aquí tienes por qué ocurre y cómo aprovecharlo.</p>
+      </section>
+
+      <section class="liquidity-why" aria-labelledby="porque-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">La razón de fondo</span>
+            <h2 id="porque-title">Por qué el precio busca tus stops</h2>
+          </div>
+        </div>
+        <div class="liquidity-why-grid">
+          <article>
+            <span>01</span>
+            <h3>Las instituciones necesitan contrapartida</h3>
+            <p>No pueden comprar o vender cuando quieren: para ejecutar órdenes de gran tamaño necesitan que haya alguien al otro lado de la operación.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Esa contrapartida está en los stops</h3>
+            <p>El trader minorista agrupa sus stops en niveles evidentes. Ahí se acumula el volumen de órdenes que las instituciones necesitan.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Por eso el precio va hacia esos niveles</h3>
+            <p>El movimiento no es aleatorio. Se dirige a donde hay liquidez suficiente, la captura y después desarrolla el movimiento real.</p>
+          </article>
+        </div>
+        <p class="contrary-insight">Cuanta más liquidez acumula un nivel, más fuerte es la atracción que ejerce sobre el precio.</p>
+      </section>
+
+      <section class="liquidity-levels" aria-labelledby="niveles-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">Dónde está la liquidez importante</span>
+            <h2 id="niveles-title">No todos los niveles valen lo mismo</h2>
+          </div>
+        </div>
+        <p class="liquidity-levels-intro">La liquidez que mueve el precio no está en cualquier swing: está en los niveles que mira todo el mundo. Márcalos en el gráfico por orden de peso.</p>
+        <ol class="liquidity-levels-list">
+          <li>
+            <b>Semanal</b>
+            <span><strong>Máximo y mínimo de la semana</strong> — el nivel con más traders posicionados y, por tanto, más liquidez acumulada.</span>
+          </li>
+          <li>
+            <b>Diario</b>
+            <span><strong>Máximo y mínimo del día anterior</strong> — la referencia que casi todo el mundo tiene marcada al abrir la sesión.</span>
+          </li>
+          <li>
+            <b>Sesión</b>
+            <span><strong>Máximo y mínimo de cada sesión</strong> — Asia, Londres y Nueva York dejan extremos que la siguiente sesión suele buscar.</span>
+          </li>
+        </ol>
+        <p class="liquidity-levels-note">Números redondos y máximos o mínimos evidentes también concentran stops, pero pesan menos que estos tres.</p>
       </section>
 
       <section class="download-gate compact-download" id="descargar">
@@ -74,13 +126,13 @@
         <div class="contrary-grid">
           <article>
             <span>01</span>
-            <h3>Marca el día anterior</h3>
-            <p>Traza manualmente su máximo y su mínimo. Son zonas sensibles donde puede concentrarse liquidez.</p>
+            <h3>Marca los niveles</h3>
+            <p>Traza a mano los máximos y mínimos semanales, diarios y de cada sesión. Son las zonas donde se concentra la liquidez.</p>
           </article>
           <article>
             <span>02</span>
             <h3>Espera la manipulación</h3>
-            <p>El precio debe barrer uno de los extremos y mostrar rechazo. Una simple llegada no es una señal.</p>
+            <p>El precio debe romper el nivel, capturar los stops y mostrar rechazo. Una simple llegada no es una señal.</p>
           </article>
           <article>
             <span>03</span>
@@ -89,6 +141,27 @@
           </article>
         </div>
         <p class="contrary-insight">El nivel crea el contexto. La toma de liquidez plantea el giro. La confirmación permite ejecutar con una invalidación clara.</p>
+      </section>
+
+      <section class="liquidity-direction" aria-labelledby="direccion-title">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">La dirección la marca el barrido</span>
+            <h2 id="direccion-title">Entras al lado contrario de la manipulación</h2>
+          </div>
+        </div>
+        <div class="direction-grid">
+          <article class="direction-sell">
+            <span class="direction-tag">Si barre un máximo</span>
+            <strong>Buscas una venta</strong>
+            <p>El precio sube por encima del nivel, captura los stops de los que estaban cortos y se gira. Ese giro es tu entrada bajista.</p>
+          </article>
+          <article class="direction-buy">
+            <span class="direction-tag">Si barre un mínimo</span>
+            <strong>Buscas una compra</strong>
+            <p>El precio cae por debajo del nivel, captura los stops de los que estaban largos y se gira. Ese giro es tu entrada alcista.</p>
+          </article>
+        </div>
       </section>
 
       <section class="confirmation-band">
@@ -107,9 +180,9 @@
       </footer>
     </main>
     <script src="../../assets/js/config.js"></script>
-    <script src="../../assets/js/access.js?v=20260807-9"></script>
-    <script src="../../assets/js/resources.js?v=20260807-9"></script>
-    <script src="../../assets/js/site.js?v=20260807-9"></script>
-    <script src="../../assets/js/leads.js?v=20260807-9"></script>
+    <script src="../../assets/js/access.js?v=20260811-1"></script>
+    <script src="../../assets/js/resources.js?v=20260811-1"></script>
+    <script src="../../assets/js/site.js?v=20260811-1"></script>
+    <script src="../../assets/js/leads.js?v=20260811-1"></script>
   </body>
 </html>
