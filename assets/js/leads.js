@@ -133,6 +133,23 @@
     return { demo: false };
   }
 
+  // Registro sin formulario: lo usa site.js cuando alguien que ya tiene el pase
+  // de biblioteca descarga un recurso. Sin esto, esas descargas no dejan rastro.
+  window.tradinversoTrackLead = function (data) {
+    if (!data || !data.email || !data.recurso) return;
+
+    sendLead({
+      fecha: new Date().toISOString(),
+      nombre: String(data.nombre || "").trim(),
+      email: String(data.email || "").trim(),
+      recurso: data.recurso,
+      via: data.via || "recurso",
+      origen: getParams().origen || "organico",
+      consentimiento: "si",
+      notas: ""
+    });
+  };
+
   function isContactRequest(form) {
     return /revision-caso/i.test(form.dataset.recurso || "");
   }

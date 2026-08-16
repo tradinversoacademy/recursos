@@ -257,6 +257,22 @@
       arrow.setAttribute("aria-hidden", "true");
       arrow.textContent = "→";
       action.appendChild(arrow);
+
+      // Sin formulario de por medio, la descarga no dejaría rastro en la hoja.
+      // Se registra al pulsar, una sola vez por recurso y sesión.
+      var registrado = false;
+      action.addEventListener("click", function () {
+        if (registrado) return;
+        registrado = true;
+        if (typeof window.tradinversoTrackLead === "function") {
+          window.tradinversoTrackLead({
+            nombre: pass.nombre,
+            email: pass.email,
+            recurso: form.dataset.recurso || "recurso-sin-nombre"
+          });
+        }
+      });
+
       unlocked.appendChild(action);
 
       form.hidden = true;
