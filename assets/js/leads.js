@@ -146,7 +146,7 @@
       via: data.via || "recurso",
       origen: getParams().origen || "organico",
       consentimiento: "si",
-      notas: ""
+      notas: data.notas || ""
     });
   };
 
@@ -471,6 +471,49 @@
     if (typeof window.tradinversoDecorateLinks === "function") {
       window.tradinversoDecorateLinks(section);
     }
+
+    trackPromoClicks(section);
+  }
+
+  // Deja constancia en la hoja de quién da el paso a la comunidad y desde qué
+  // recurso, para saber cuál de ellos convierte mejor.
+  function trackPromoClicks(section) {
+    const origen = getResourceSlug();
+
+    [
+      { selector: ".community-button", recurso: "comunidad-whatsapp", via: "comunidad" },
+      { selector: ".success-secondary", recurso: "clase-gratuita", via: "clase" }
+    ].forEach(({ selector, recurso, via }) => {
+      const link = section.querySelector(selector);
+      if (!link) return;
+
+      let registrado = false;
+      link.addEventListener("click", () => {
+        if (registrado) return;
+        registrado = true;
+
+        const profile = getSavedProfile();
+        if (!profile) return;
+
+        window.tradinversoTrackLead({
+          nombre: profile.nombre,
+          email: profile.email,
+          recurso: recurso,
+          via: via,
+          notas: origen ? "desde " + origen : ""
+        });
+      });
+    });
+  }
+
+  function getResourceSlug() {
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      if (parts[i] === "recursos" && parts[i + 1] && parts[i + 1].indexOf(".html") === -1) {
+        return parts[i + 1];
+      }
+    }
+    return "";
   }
 
   document.addEventListener("DOMContentLoaded", () => {
