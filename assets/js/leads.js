@@ -434,17 +434,31 @@
     const footer = document.querySelector(".social-footer");
     if (!footer) return;
 
+    // Tras descargar, el paso más pequeño y más probable es entrar a la
+    // comunidad. La clase gratuita queda como segundo paso en la misma banda.
+    const comunidad = window.TRADINVERSO_COMUNIDAD_URL || "";
     const section = document.createElement("section");
-    section.className = "masterclass-promo";
+    section.className = "masterclass-promo success-promo";
     section.dataset.masterclassPromo = "";
     section.hidden = true;
     section.innerHTML = `
       <div>
-        <span class="masterclass-promo-badge">Siguiente paso</span>
-        <h2>Tu guía ya se está descargando</h2>
-        <p>Mientras la revisas: en la clase gratuita te enseño cómo convertir estos conceptos en un proceso de trading sencillo, objetivo y acompañado.</p>
+        <span class="masterclass-promo-badge">Ya es tuya</span>
+        <h2>Tu guía se está descargando</h2>
+        <p>Ahora entra en la comunidad gratuita de WhatsApp: hacemos operativas en directo, comparto contenido exclusivo que no publico en ningún otro sitio, aviso de cada recurso nuevo y puedes preguntar tus dudas.</p>
+        <ul class="community-points">
+          <li>Operativas en directo</li>
+          <li>Contenido gratuito en exclusiva</li>
+          <li>Avisos de nuevos recursos</li>
+          <li>Resolvemos tus dudas</li>
+        </ul>
       </div>
-      <a class="masterclass-button" href="https://clase.tradinverso.com/" target="_blank" rel="noopener">Ver la clase gratuita <span aria-hidden="true">→</span></a>
+      <div class="success-actions-stack">
+        ${comunidad
+          ? `<a class="masterclass-button community-button" href="${comunidad}" target="_blank" rel="noopener">Entrar a la comunidad <span aria-hidden="true">→</span></a>`
+          : ""}
+        <a class="success-secondary" href="https://clase.tradinverso.com/" target="_blank" rel="noopener">O ver primero la clase gratuita <span aria-hidden="true">→</span></a>
+      </div>
     `;
 
     const leadSection = document.querySelector("[data-lead-form]")?.closest("section");

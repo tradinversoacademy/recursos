@@ -2614,6 +2614,58 @@ a.nav-pill:hover {
   margin: 12px auto 48px;
 }
 
+/* Panel de éxito tras descargar: la comunidad manda, la clase acompaña. */
+.community-points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 20px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.community-points li {
+  position: relative;
+  padding-left: 22px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 15px;
+}
+
+.community-points li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--sky);
+  font-weight: 900;
+}
+
+.success-actions-stack {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.community-button {
+  background: #25d366;
+  border-color: #25d366;
+  color: #04361c;
+}
+
+.community-button:hover {
+  background: #1eb658;
+  border-color: #1eb658;
+}
+
+.success-secondary {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  text-decoration: underline;
+}
+
+.success-secondary:hover {
+  color: #fff;
+}
+
 /* Recurso de liquidez: el porqué, los niveles y la dirección. */
 .liquidity-why,
 .liquidity-levels,
@@ -3017,7 +3069,8 @@ a.nav-pill:hover {
   }
 
   .liquidity-why-grid,
-  .direction-grid {
+  .direction-grid,
+  .community-points {
     grid-template-columns: 1fr;
   }
 
