@@ -43,6 +43,7 @@ CARDS = {
     "manipulacion-maximos-minimos": ("Máximos y mínimos", "Toma de liquidez y confirmación"),
     "modelo-liquidez-estructura-fvg": ("Liquidez + Estructura + FVG", "El modelo de compra en tres pasos"),
     "amd": ("AMD", "Acumulación, manipulación y distribución"),
+    "backtesting-orb": ("Backtesting del ORB", "Vídeo y plantilla para medir tus datos"),
 }
 
 

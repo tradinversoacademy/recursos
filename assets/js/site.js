@@ -248,6 +248,11 @@
             target.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         });
+      } else if (/^https?:\/\//i.test(redirect)) {
+        action.href = redirect;
+        action.target = "_blank";
+        action.rel = "noopener";
+        action.textContent = "Abrir la plantilla ";
       } else {
         action.href = redirect || "recurso.html";
         action.textContent = "Abrir el recurso ";

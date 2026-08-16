@@ -38,6 +38,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "backtesting-orb",
+    title: "Backtesting del ORB",
+    description: "El vídeo del proceso y mi plantilla para medir winrate, drawdown y en qué hora operas mejor.",
+    symbol: "BT",
+    type: "Vídeo + plantilla",
+    category: "herramientas",
+    search: "backtesting orb nasdaq plantilla tabla excel google sheets winrate drawdown estadisticas datos registro operaciones journal",
+    cta: "Conseguir la plantilla"
+  },
+  {
     slug: "amd",
     title: "AMD: el ciclo de las sesiones",
     description: "Asia acumula, Londres manipula y Nueva York distribuye. Con las confirmaciones de entrada.",

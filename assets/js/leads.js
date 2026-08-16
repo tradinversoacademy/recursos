@@ -232,6 +232,16 @@
       : document.querySelector("[data-masterclass-promo]");
     if (!target) return;
 
+    // El titular se ajusta a lo que acaba de conseguir: no todo es una guía.
+    const titulo = target.querySelector("[data-success-title]");
+    if (titulo) {
+      const redirect = form.dataset.redirect || "";
+      const esDescarga = form.dataset.download || /\.pdf(?:$|[?#])/i.test(redirect);
+      titulo.textContent = esDescarga
+        ? "Tu guía se está descargando"
+        : "Ya tienes acceso";
+    }
+
     target.hidden = false;
     target.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -257,7 +267,10 @@
           || (/\.pdf(?:$|[?#])/i.test(configuredRedirect) ? configuredRedirect : "");
         const calendly = form.dataset.calendly || "";
         const redirect = form.dataset.redirect || (download || calendly ? "" : "recurso.html");
-        const opensInNewTab = Boolean(calendly) || (!download && /\.pdf(?:$|[?#])/i.test(redirect));
+        // Un destino externo (una plantilla en Drive, por ejemplo) se abre aparte
+        // para no sacar al visitante del recurso.
+        const externo = /^https?:\/\//i.test(redirect);
+        const opensInNewTab = Boolean(calendly) || externo || (!download && /\.pdf(?:$|[?#])/i.test(redirect));
         const payload = {
           fecha: new Date().toISOString(),
           nombre: String(data.get("nombre") || "").trim(),
@@ -361,6 +374,12 @@
               ? "Modo prueba activo. Abriendo el recurso..."
               : "Datos guardados. Abriendo el recurso...";
           }
+          // El recurso se abre aparte, así que el lead sigue aquí: merece ver
+          // el siguiente paso igual que quien descarga un PDF.
+          if (opensInNewTab) {
+            revealSuccessTarget(form);
+            if (submitButton) submitButton.disabled = false;
+          }
           window.setTimeout(() => {
             if (resourceWindow) {
               resourceWindow.opener = null;
@@ -443,8 +462,8 @@
     section.hidden = true;
     section.innerHTML = `
       <div>
-        <span class="masterclass-promo-badge">Ya es tuya</span>
-        <h2>Tu guía se está descargando</h2>
+        <span class="masterclass-promo-badge">Ya es tuyo</span>
+        <h2 data-success-title>Tu guía se está descargando</h2>
         <p>Ahora entra en la comunidad gratuita de WhatsApp: hacemos operativas en directo, comparto contenido exclusivo que no publico en ningún otro sitio, aviso de cada recurso nuevo y puedes preguntar tus dudas.</p>
         <ul class="community-points">
           <li>Operativas en directo</li>

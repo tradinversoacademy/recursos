@@ -2,87 +2,92 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/amd/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/amd-ifvg/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tradinversoacademy.github.io/recursos/recursos/backtesting-orb/</loc>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/checklist-entrada-mercado/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/claridad-trader/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/data-tradinverso/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/guia-5-conceptos-trading/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/ifvg/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/manipulacion-maximos-minimos/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/metodo-c3/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/modelo-liquidez-estructura-fvg/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/orb-nasdaq/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/plan-trader-rentable/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/programa-tradinverso/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/protocolo-mental-trader/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/rango-asiatico/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tradinversoacademy.github.io/recursos/recursos/test-objetividad-sistema/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-16</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
