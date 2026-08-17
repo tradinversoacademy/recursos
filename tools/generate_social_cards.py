@@ -44,6 +44,7 @@ CARDS = {
     "modelo-liquidez-estructura-fvg": ("Liquidez + Estructura + FVG", "El modelo de compra en tres pasos"),
     "amd": ("AMD", "Acumulación, manipulación y distribución"),
     "backtesting-orb": ("Backtesting del ORB", "Vídeo y plantilla para medir tus datos"),
+    "mechas-velas": ("Cómo leer las mechas", "Quién tiene el control del mercado"),
 }
 
 

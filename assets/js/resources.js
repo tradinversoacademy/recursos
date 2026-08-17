@@ -38,6 +38,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "mechas-velas",
+    title: "Cómo leer las mechas",
+    description: "Qué significa una mecha larga arriba o abajo y por qué solo importa cuando aparece en una zona relevante.",
+    symbol: "MC",
+    type: "Lectura de velas",
+    category: "operativas",
+    search: "mechas velas sombras colas rechazo cuerpo apertura cierre maximo minimo soporte resistencia zona relevante lectura price action giro compradores vendedores",
+    cta: "Abrir recurso"
+  },
+  {
     slug: "backtesting-orb",
     title: "Backtesting del ORB",
     description: "El vídeo del proceso y mi plantilla para medir winrate, drawdown y en qué hora operas mejor.",
