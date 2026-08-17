@@ -267,13 +267,37 @@
       // Se registra al pulsar, una sola vez por recurso y sesión.
       var registrado = false;
       action.addEventListener("click", function () {
-        if (registrado) return;
-        registrado = true;
-        if (typeof window.tradinversoTrackLead === "function") {
-          window.tradinversoTrackLead({
-            nombre: pass.nombre,
-            email: pass.email,
-            recurso: form.dataset.recurso || "recurso-sin-nombre"
+        if (!registrado) {
+          registrado = true;
+          if (typeof window.tradinversoTrackLead === "function") {
+            window.tradinversoTrackLead({
+              nombre: pass.nombre,
+              email: pass.email,
+              recurso: form.dataset.recurso || "recurso-sin-nombre"
+            });
+          }
+        }
+
+        // Quien tiene el pase se salta el formulario, así que sin esto nunca
+        // vería el paso a la comunidad. Se le muestra el mismo panel.
+        if (typeof window.tradinversoShowSuccess !== "function" || calendly) return;
+
+        if (download) {
+          window.tradinversoShowSuccess({
+            modal: true,
+            title: "Tu guía se está descargando",
+            fallbackUrl: download,
+            fallbackText: "¿No ha empezado la descarga?",
+            fallbackLabel: "Descárgala aquí",
+            fallbackDownload: form.dataset.downloadName || ""
+          });
+        } else if (/^https?:\/\//i.test(redirect)) {
+          window.tradinversoShowSuccess({
+            modal: true,
+            title: "Ya tienes acceso",
+            fallbackUrl: redirect,
+            fallbackText: "¿No se ha abierto la pestaña?",
+            fallbackLabel: "Ábrela aquí"
           });
         }
       });

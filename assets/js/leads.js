@@ -4,6 +4,7 @@
   const PROFILE_KEY = "tradinverso_lead_profile_v1";
   const ACCESS_KEY = "tradinverso_lead_access_v1";
   const PROFILE_DURATION = 90 * 24 * 60 * 60 * 1000;
+  const SUCCESS_TITLE_ID = "tradinverso-success-title";
 
   function getParams() {
     // Solo devuelve valor si viene de verdad en la URL: los formularios ya
@@ -225,26 +226,84 @@
     }
   }
 
-  function revealSuccessTarget(form) {
-    const selector = form.dataset.successTarget;
-    const target = selector
-      ? document.querySelector(selector)
-      : document.querySelector("[data-masterclass-promo]");
-    if (!target) return;
+  // Si la descarga o la pestaña nueva no llegan a abrirse, el visitante tiene
+  // aquí el enlace directo en lugar de quedarse sin el recurso.
+  function setSuccessFallback(target, options) {
+    const fallback = target.querySelector("[data-success-fallback]");
+    if (!fallback) return;
 
-    // El titular se ajusta a lo que acaba de conseguir: no todo es una guía.
-    const titulo = target.querySelector("[data-success-title]");
-    if (titulo) {
-      const redirect = form.dataset.redirect || "";
-      const esDescarga = form.dataset.download || /\.pdf(?:$|[?#])/i.test(redirect);
-      titulo.textContent = esDescarga
-        ? "Tu guía se está descargando"
-        : "Ya tienes acceso";
+    if (!options.fallbackUrl) {
+      fallback.hidden = true;
+      return;
     }
 
-    target.hidden = false;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const link = document.createElement("a");
+    link.href = options.fallbackUrl;
+    link.textContent = options.fallbackLabel || "Ábrelo aquí";
+    if (options.fallbackDownload !== undefined) {
+      link.setAttribute("download", options.fallbackDownload || "");
+    } else {
+      link.target = "_blank";
+      link.rel = "noopener";
+    }
+
+    fallback.textContent = (options.fallbackText || "¿No se ha abierto?") + " ";
+    fallback.appendChild(link);
+    fallback.hidden = false;
   }
+
+  function openSuccessModal(panel) {
+    const overlay = document.querySelector("[data-success-overlay]");
+    const slot = overlay && overlay.querySelector("[data-success-slot]");
+    if (!overlay || !slot) return false;
+
+    slot.appendChild(panel);
+    overlay.hidden = false;
+    document.body.classList.add("has-success-modal");
+
+    const primary = overlay.querySelector(".community-button")
+      || overlay.querySelector("[data-success-close]");
+    if (primary) primary.focus({ preventScroll: true });
+    return true;
+  }
+
+  function closeSuccessModal() {
+    const overlay = document.querySelector("[data-success-overlay]");
+    if (!overlay || overlay.hidden) return;
+
+    overlay.hidden = true;
+    document.body.classList.remove("has-success-modal");
+
+    // Al cerrarlo vuelve a su hueco de la página: sigue siendo el siguiente paso.
+    const anchor = document.querySelector("[data-success-anchor]");
+    const panel = document.querySelector("[data-masterclass-promo]");
+    if (anchor && panel) anchor.appendChild(panel);
+  }
+
+  // Cuando el recurso se descarga o se abre en otra pestaña, el panel se
+  // muestra como modal: dejarlo dentro de la página lo deja en segundo plano
+  // y el visitante nunca llega a ver el paso a la comunidad.
+  function showSuccess(options) {
+    const settings = options || {};
+    const target = settings.target || document.querySelector("[data-masterclass-promo]");
+    if (!target) return;
+
+    const titulo = target.querySelector("[data-success-title]");
+    if (titulo && settings.title) titulo.textContent = settings.title;
+    setSuccessFallback(target, settings);
+
+    target.hidden = false;
+
+    const esPanelPropio = target.dataset.masterclassPromo !== undefined;
+    if (settings.modal && esPanelPropio && openSuccessModal(target)) return;
+
+    if (settings.scroll !== false) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  // site.js lo usa para quien ya tiene el pase y no pasa por el formulario.
+  window.tradinversoShowSuccess = showSuccess;
 
   function initLeadForms() {
     const params = getParams();
@@ -267,6 +326,11 @@
           || (/\.pdf(?:$|[?#])/i.test(configuredRedirect) ? configuredRedirect : "");
         const calendly = form.dataset.calendly || "";
         const redirect = form.dataset.redirect || (download || calendly ? "" : "recurso.html");
+        // Las páginas de contacto traen su propio bloque de confirmación: ahí
+        // manda el de la página y no se abre modal.
+        const pageSuccessTarget = form.dataset.successTarget
+          ? document.querySelector(form.dataset.successTarget)
+          : null;
         // Un destino externo (una plantilla en Drive, por ejemplo) se abre aparte
         // para no sacar al visitante del recurso.
         const externo = /^https?:\/\//i.test(redirect);
@@ -331,7 +395,14 @@
             document.querySelectorAll("[data-calendly-fallback]").forEach((link) => {
               link.href = calendlyUrl;
             });
-            revealSuccessTarget(form);
+            showSuccess({
+              target: pageSuccessTarget,
+              modal: !pageSuccessTarget,
+              title: "Ya puedes elegir día y hora",
+              fallbackUrl: calendlyUrl,
+              fallbackText: "¿No se ha abierto el calendario?",
+              fallbackLabel: "Ábrelo aquí"
+            });
             if (submitButton) submitButton.disabled = false;
             return;
           }
@@ -345,7 +416,15 @@
                   : "Datos guardados. Descarga iniciada.";
             }
             startDownload(download, form.dataset.downloadName);
-            revealSuccessTarget(form);
+            showSuccess({
+              target: pageSuccessTarget,
+              modal: !pageSuccessTarget,
+              title: "Tu guía se está descargando",
+              fallbackUrl: download,
+              fallbackText: "¿No ha empezado la descarga?",
+              fallbackLabel: "Descárgala aquí",
+              fallbackDownload: form.dataset.downloadName || ""
+            });
             if (submitButton) submitButton.disabled = false;
             return;
           }
@@ -362,10 +441,13 @@
               if (hideAfterSuccess) hideAfterSuccess.hidden = true;
               target.scrollIntoView({ behavior: "smooth", block: "start" });
             }
-            // El contenido revelado no es el final del recorrido: el lead
-            // también debe encontrar la clase gratuita más abajo.
+            // El contenido revelado no es el final del recorrido, pero aquí el
+            // visitante se queda en la página: el panel va debajo, sin modal
+            // que le tape lo que acaba de desbloquear.
             const promo = document.querySelector("[data-masterclass-promo]");
-            if (promo && promo !== target) promo.hidden = false;
+            if (promo && promo !== target) {
+              showSuccess({ target: promo, title: "Ya tienes acceso", scroll: false });
+            }
             return;
           }
 
@@ -374,10 +456,17 @@
               ? "Modo prueba activo. Abriendo el recurso..."
               : "Datos guardados. Abriendo el recurso...";
           }
-          // El recurso se abre aparte, así que el lead sigue aquí: merece ver
-          // el siguiente paso igual que quien descarga un PDF.
+          // El recurso se abre en otra pestaña y el navegador la enfoca. El
+          // modal se queda esperando aquí para cuando el lead vuelva.
           if (opensInNewTab) {
-            revealSuccessTarget(form);
+            showSuccess({
+              target: pageSuccessTarget,
+              modal: !pageSuccessTarget,
+              title: "Ya tienes acceso",
+              fallbackUrl: redirect,
+              fallbackText: "¿No se ha abierto la pestaña?",
+              fallbackLabel: "Ábrela aquí"
+            });
             if (submitButton) submitButton.disabled = false;
           }
           window.setTimeout(() => {
@@ -447,14 +536,14 @@
     update();
   }
 
-  function initMasterclassPromo() {
+  function initSuccessPanel() {
     if (!document.querySelector("[data-lead-form]") || document.querySelector("[data-masterclass-promo]")) return;
 
     const footer = document.querySelector(".social-footer");
     if (!footer) return;
 
     // Tras descargar, el paso más pequeño y más probable es entrar a la
-    // comunidad. La clase gratuita queda como segundo paso en la misma banda.
+    // comunidad. La clase gratuita queda como segundo paso en el mismo panel.
     const comunidad = window.TRADINVERSO_COMUNIDAD_URL || "";
     const section = document.createElement("section");
     section.className = "masterclass-promo success-promo";
@@ -463,7 +552,8 @@
     section.innerHTML = `
       <div>
         <span class="masterclass-promo-badge">Ya es tuyo</span>
-        <h2 data-success-title>Tu guía se está descargando</h2>
+        <h2 id="${SUCCESS_TITLE_ID}" data-success-title>Tu guía se está descargando</h2>
+        <p class="success-fallback" data-success-fallback hidden></p>
         <p>Ahora entra en la comunidad gratuita de WhatsApp: hacemos operativas en directo, comparto contenido exclusivo que no publico en ningún otro sitio, aviso de cada recurso nuevo y puedes preguntar tus dudas.</p>
         <ul class="community-points">
           <li>Operativas en directo</li>
@@ -480,12 +570,39 @@
       </div>
     `;
 
+    // El panel vive en la página dentro de este hueco y se mueve al modal
+    // cuando hace falta, así que la copia y los listeners son siempre los mismos.
+    const anchor = document.createElement("div");
+    anchor.dataset.successAnchor = "";
+    anchor.appendChild(section);
+
     const leadSection = document.querySelector("[data-lead-form]")?.closest("section");
     if (leadSection) {
-      leadSection.after(section);
+      leadSection.after(anchor);
     } else {
-      footer.before(section);
+      footer.before(anchor);
     }
+
+    const overlay = document.createElement("div");
+    overlay.className = "success-overlay";
+    overlay.dataset.successOverlay = "";
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <div class="success-overlay-shell" role="dialog" aria-modal="true" aria-labelledby="${SUCCESS_TITLE_ID}">
+        <button class="success-close" type="button" data-success-close aria-label="Cerrar">&times;</button>
+        <div data-success-slot></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest("[data-success-close]")) {
+        closeSuccessModal();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSuccessModal();
+    });
 
     if (typeof window.tradinversoDecorateLinks === "function") {
       window.tradinversoDecorateLinks(section);
@@ -538,6 +655,6 @@
   document.addEventListener("DOMContentLoaded", () => {
     initLeadForms();
     initChecklist();
-    initMasterclassPromo();
+    initSuccessPanel();
   });
 })();
