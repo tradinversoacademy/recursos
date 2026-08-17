@@ -2703,6 +2703,25 @@ a.nav-pill:hover {
   background: var(--ice);
 }
 
+.success-dismiss {
+  padding: 4px;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: inherit;
+  font-size: 15px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.success-dismiss[hidden] {
+  display: none;
+}
+
+.success-dismiss:hover {
+  color: #fff;
+}
+
 .success-fallback {
   margin: 14px 0 0;
   font-size: 14px;

@@ -292,6 +292,17 @@
     if (titulo && settings.title) titulo.textContent = settings.title;
     setSuccessFallback(target, settings);
 
+    // Cuando lo que se acaba de desbloquear está en esta misma página, la
+    // salida tiene que ser explícita: si no, el modal parece un callejón.
+    const dismiss = target.querySelector("[data-success-dismiss]");
+    if (dismiss) {
+      dismiss.textContent = settings.dismissLabel || "";
+      dismiss.hidden = !settings.dismissLabel;
+    }
+
+    const secundario = target.querySelector(".success-secondary");
+    if (secundario) secundario.hidden = Boolean(settings.hideSecondary);
+
     target.hidden = false;
 
     const esPanelPropio = target.dataset.masterclassPromo !== undefined;
@@ -379,6 +390,16 @@
             if (status) status.textContent = "Acceso concedido. Ya puedes entrar a todos los recursos.";
             if (submitButton) submitButton.disabled = false;
             document.dispatchEvent(new CustomEvent("tradinverso:library-unlocked"));
+            // Un instante antes de abrirlo: así se ve que las tarjetas se
+            // desbloquean y el modal no tapa la prueba de que ha funcionado.
+            window.setTimeout(() => {
+              showSuccess({
+                modal: true,
+                title: "Ya tienes acceso a la biblioteca",
+                dismissLabel: "Ahora no, ver los recursos",
+                hideSecondary: true
+              });
+            }, 900);
             return;
           }
 
@@ -567,6 +588,7 @@
           ? `<a class="masterclass-button community-button" href="${comunidad}" target="_blank" rel="noopener">Entrar a la comunidad <span aria-hidden="true">→</span></a>`
           : ""}
         <a class="success-secondary" href="https://clase.tradinverso.com/" target="_blank" rel="noopener">O ver primero la clase gratuita <span aria-hidden="true">→</span></a>
+        <button class="success-dismiss" type="button" data-success-dismiss hidden></button>
       </div>
     `;
 
@@ -596,7 +618,9 @@
     document.body.appendChild(overlay);
 
     overlay.addEventListener("click", (event) => {
-      if (event.target === overlay || event.target.closest("[data-success-close]")) {
+      if (event.target === overlay
+        || event.target.closest("[data-success-close]")
+        || event.target.closest("[data-success-dismiss]")) {
         closeSuccessModal();
       }
     });
@@ -614,7 +638,8 @@
   // Deja constancia en la hoja de quién da el paso a la comunidad y desde qué
   // recurso, para saber cuál de ellos convierte mejor.
   function trackPromoClicks(section) {
-    const origen = getResourceSlug();
+    // Fuera de un recurso, el único formulario es el de la portada.
+    const origen = getResourceSlug() || "biblioteca";
 
     [
       { selector: ".community-button", recurso: "comunidad-whatsapp", via: "comunidad" },
