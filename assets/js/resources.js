@@ -38,6 +38,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "tipos-fair-value-gap",
+    title: "Los 3 tipos de fair value gap",
+    description: "Breakaway, el de siempre y el que no vale: la tercera vela decide cuál tienes y cómo se entra.",
+    symbol: "FVG",
+    type: "Vídeo + guía",
+    category: "operativas",
+    search: "fair value gap fvg tipos breakaway gap desequilibrio hueco tercera vela rechazo continuacion retesteo mitigacion envolvente ifvg inverse limite entrada video",
+    cta: "Ver el vídeo"
+  },
+  {
     slug: "mechas-velas",
     title: "Cómo leer las mechas",
     description: "Qué significa una mecha larga arriba o abajo y por qué solo importa cuando aparece en una zona relevante.",

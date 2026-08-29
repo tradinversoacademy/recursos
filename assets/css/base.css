@@ -37,6 +37,17 @@ a {
   color: inherit;
 }
 
+/* Enlace dentro de un párrafo: el color base es heredado y ahí no se vería. */
+.inline-link {
+  color: var(--blue);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.inline-link:hover {
+  color: var(--navy-2);
+}
+
 button,
 input {
   font: inherit;
