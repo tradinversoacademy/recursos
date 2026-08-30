@@ -309,8 +309,40 @@
     });
   }
 
+  // La barra solo se separa del fondo cuando ya hay scroll: arriba del todo
+  // se ve como siempre, sin línea ni sombra.
+  function initStickyTopbar() {
+    var topbar = document.querySelector(".topbar");
+    if (!topbar) return;
+
+    function marcar(pegada) {
+      topbar.classList.toggle("is-stuck", pegada);
+    }
+
+    // El observador detecta el momento exacto en que la barra toca el borde
+    // superior, sin depender de que lleguen eventos de scroll.
+    if (typeof window.IntersectionObserver === "function") {
+      new IntersectionObserver(function (entradas) {
+        marcar(entradas[0].intersectionRatio < 1);
+      }, { threshold: [1], rootMargin: "-1px 0px 0px 0px" }).observe(topbar);
+      return;
+    }
+
+    var pendiente = false;
+    window.addEventListener("scroll", function () {
+      if (pendiente) return;
+      pendiente = true;
+      window.requestAnimationFrame(function () {
+        pendiente = false;
+        marcar(window.scrollY > 8);
+      });
+    }, { passive: true });
+    marcar(window.scrollY > 8);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTopbarCta();
+    initStickyTopbar();
     initRelatedResources();
     initLibraryPass();
     decorateLinks(document);
