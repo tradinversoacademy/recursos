@@ -39,6 +39,8 @@
         if (isCalendly && profile && !url.searchParams.get("email")) {
           url.searchParams.set("name", profile.nombre);
           url.searchParams.set("email", profile.email);
+          // Primera pregunta de "Reunión Tradinverso": el WhatsApp.
+          if (profile.telefono) url.searchParams.set("a1", profile.telefono);
         }
 
         if (!url.searchParams.get("utm_source")) {
@@ -190,6 +192,10 @@
 
     var pass = access.getPass();
 
+    // Pases de antes de pedir el teléfono: se deja el formulario, que ya
+    // reconoce a la persona y solo le pide país y teléfono una vez.
+    if (!pass.telefono || !pass.pais) return;
+
     document.querySelectorAll("[data-lead-form]").forEach(function (form) {
       if (form.dataset.libraryAccess !== undefined) return;
 
@@ -225,6 +231,7 @@
           var parsed = new URL(calendly);
           parsed.searchParams.set("name", pass.nombre);
           parsed.searchParams.set("email", pass.email);
+          parsed.searchParams.set("a1", pass.telefono);
           url = parsed.toString();
         } catch (error) {
           // Se usa el enlace tal cual.
@@ -273,6 +280,8 @@
             window.tradinversoTrackLead({
               nombre: pass.nombre,
               email: pass.email,
+              telefono: pass.telefono,
+              pais: pass.pais,
               recurso: form.dataset.recurso || "recurso-sin-nombre"
             });
           }

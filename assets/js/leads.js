@@ -50,21 +50,176 @@
     return String(value || "").trim().toLowerCase();
   }
 
+  // País con su prefijo. Se guarda el código ISO y el teléfono en formato
+  // internacional (+34600...), que es como lo pide Meta para las audiencias.
+  const HABITUALES = [
+    ["ES", "España", "34"],
+    ["MX", "México", "52"],
+    ["AR", "Argentina", "54"],
+    ["CO", "Colombia", "57"],
+    ["CL", "Chile", "56"],
+    ["PE", "Perú", "51"],
+    ["US", "Estados Unidos", "1"]
+  ];
+  const RESTO = [
+    ["DE", "Alemania", "49"],
+    ["AD", "Andorra", "376"],
+    ["AT", "Austria", "43"],
+    ["BE", "Bélgica", "32"],
+    ["BO", "Bolivia", "591"],
+    ["BR", "Brasil", "55"],
+    ["CA", "Canadá", "1"],
+    ["CR", "Costa Rica", "506"],
+    ["CU", "Cuba", "53"],
+    ["EC", "Ecuador", "593"],
+    ["SV", "El Salvador", "503"],
+    ["FR", "Francia", "33"],
+    ["GT", "Guatemala", "502"],
+    ["GQ", "Guinea Ecuatorial", "240"],
+    ["HN", "Honduras", "504"],
+    ["IE", "Irlanda", "353"],
+    ["IT", "Italia", "39"],
+    ["LU", "Luxemburgo", "352"],
+    ["MA", "Marruecos", "212"],
+    ["NI", "Nicaragua", "505"],
+    ["NL", "Países Bajos", "31"],
+    ["PA", "Panamá", "507"],
+    ["PY", "Paraguay", "595"],
+    ["PT", "Portugal", "351"],
+    ["PR", "Puerto Rico", "1"],
+    ["GB", "Reino Unido", "44"],
+    ["DO", "República Dominicana", "1"],
+    ["CH", "Suiza", "41"],
+    ["UY", "Uruguay", "598"],
+    ["VE", "Venezuela", "58"]
+  ];
+  const OTRO_PAIS = "OTRO";
+  const PREFIJOS = {};
+  HABITUALES.concat(RESTO).forEach(([code, , dial]) => {
+    PREFIJOS[code] = dial;
+  });
+
+  // El idioma del navegador suele traer el país (es-MX, es-AR...).
+  function detectCountry() {
+    const idiomas = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || ""];
+    for (const idioma of idiomas) {
+      const region = String(idioma).split("-")[1];
+      if (region && PREFIJOS[region.toUpperCase()]) return region.toUpperCase();
+    }
+    return "";
+  }
+
+  // Devuelve el número en formato internacional o "" si no es válido.
+  function normalizePhone(raw, country) {
+    const texto = String(raw || "").trim();
+    let digitos = texto.replace(/\D/g, "");
+    if (!digitos) return "";
+
+    if (texto.startsWith("+")) {
+      // Ya viene con prefijo internacional.
+    } else if (digitos.startsWith("00")) {
+      digitos = digitos.slice(2);
+    } else {
+      const prefijo = PREFIJOS[country];
+      if (!prefijo) return "";
+      digitos = digitos.replace(/^0+/, "");
+      // Si ya lo escribió con el prefijo del país, no se duplica.
+      const yaLoLleva = digitos.startsWith(prefijo) && digitos.length >= prefijo.length + 8;
+      if (!yaLoLleva) digitos = prefijo + digitos;
+    }
+
+    return digitos.length >= 8 && digitos.length <= 15 ? "+" + digitos : "";
+  }
+
+  function countryOptions(selected) {
+    const opcion = ([code, nombre, dial]) =>
+      `<option value="${code}" data-dial="${dial}"${code === selected ? " selected" : ""}>${nombre} (+${dial})</option>`;
+    return `
+      <option value="" disabled${selected ? "" : " selected"}>Elige tu país</option>
+      <optgroup label="Más habituales">${HABITUALES.map(opcion).join("")}</optgroup>
+      <optgroup label="Resto de países">${RESTO.map(opcion).join("")}</optgroup>
+      <option value="${OTRO_PAIS}">Otro país</option>
+    `;
+  }
+
+  function syncPhonePrefix(form) {
+    const select = form.querySelector('[name="pais"]');
+    const prefix = form.querySelector("[data-phone-prefix]");
+    const input = form.querySelector('[name="telefono"]');
+    if (!select || !prefix || !input) return;
+
+    const dial = PREFIJOS[select.value];
+    prefix.textContent = dial ? "+" + dial : "+";
+    prefix.hidden = !dial;
+    input.placeholder = dial ? "Tu número" : "+44 7700 900000";
+    input.setAttribute("autocomplete", dial ? "tel-national" : "tel");
+  }
+
+  // Los campos se añaden aquí y no en cada HTML: así los 21 formularios
+  // piden lo mismo y un cambio futuro se hace en un solo sitio.
+  function injectContactFields(form, index) {
+    if (form.querySelector('[name="telefono"]')) return;
+    const emailField = form.querySelector('[name="email"]')?.closest(".field");
+    if (!emailField) return;
+
+    const sufijo = index ? "-" + index : "";
+    const bloque = document.createElement("template");
+    bloque.innerHTML = `
+      <div class="field field-country">
+        <label for="pais${sufijo}">País</label>
+        <select id="pais${sufijo}" name="pais" autocomplete="country" required>${countryOptions(detectCountry())}</select>
+      </div>
+      <div class="field field-phone">
+        <label for="telefono${sufijo}">Teléfono</label>
+        <div class="phone-input">
+          <span class="phone-prefix" data-phone-prefix>+</span>
+          <input id="telefono${sufijo}" name="telefono" type="tel" inputmode="tel" required>
+        </div>
+      </div>
+    `;
+    emailField.after(bloque.content);
+
+    const select = form.querySelector('[name="pais"]');
+    select.addEventListener("change", () => syncPhonePrefix(form));
+    // Al reiniciar el formulario ("No soy yo") el prefijo debe seguir al país.
+    form.addEventListener("reset", () => window.setTimeout(() => syncPhonePrefix(form), 0));
+    syncPhonePrefix(form);
+  }
+
   function getSavedProfile() {
     const profile = readStoredValue(PROFILE_KEY, null);
     if (!profile || !profile.nombre || !profile.email || Number(profile.expiresAt) <= Date.now()) {
       removeStoredValue(PROFILE_KEY);
       removeStoredValue(ACCESS_KEY);
-      return null;
+      // Quien se registró en la portada tiene el pase pero puede no tener
+      // perfil: sus datos sirven igual para no volver a pedírselos.
+      const access = window.TradinversoAccess;
+      return access && access.getPass ? access.getPass() : null;
+    }
+
+    // El teléfono pudo quedar guardado solo en el pase: se aprovecha.
+    const pass = window.TradinversoAccess && window.TradinversoAccess.getPass();
+    if (!hasContactData(profile) && hasContactData(pass)
+      && normalizeEmail(pass.email) === normalizeEmail(profile.email)) {
+      return Object.assign({}, profile, { telefono: pass.telefono, pais: pass.pais });
     }
 
     return profile;
+  }
+
+  // Los registros de antes no tenían teléfono: a esos se les pide una vez.
+  function hasContactData(profile) {
+    return Boolean(profile && profile.telefono && profile.pais);
   }
 
   function saveProfile(payload) {
     writeStoredValue(PROFILE_KEY, {
       nombre: payload.nombre,
       email: normalizeEmail(payload.email),
+      telefono: payload.telefono || "",
+      pais: payload.pais || "",
       expiresAt: Date.now() + PROFILE_DURATION
     });
   }
@@ -97,6 +252,9 @@
   function clearSavedIdentity() {
     removeStoredValue(PROFILE_KEY);
     removeStoredValue(ACCESS_KEY);
+    // El pase también identifica a alguien: si no, "No soy yo" recargaría
+    // la página y volvería a saludar a la misma persona.
+    if (window.TradinversoAccess) window.TradinversoAccess.revokePass();
   }
 
   function buildLeadUrl(payload) {
@@ -147,7 +305,9 @@
       via: data.via || "recurso",
       origen: getParams().origen || "organico",
       consentimiento: "si",
-      notas: data.notas || ""
+      notas: data.notas || "",
+      telefono: data.telefono || "",
+      pais: data.pais || ""
     });
   };
 
@@ -165,17 +325,39 @@
     const contactRequest = isContactRequest(form);
     const alreadyRecorded = hasRecordedAccess(profile.email, resource);
 
+    const phoneInput = form.querySelector('[name="telefono"]');
+    const countryInput = form.querySelector('[name="pais"]');
+    const tieneContacto = hasContactData(profile);
+
     if (nameInput) nameInput.value = profile.nombre;
     if (emailInput) emailInput.value = profile.email;
-    [nameInput, emailInput].forEach((input) => {
+    const conocidos = [nameInput, emailInput];
+
+    if (tieneContacto && phoneInput && countryInput) {
+      countryInput.value = profile.pais;
+      phoneInput.value = profile.telefono;
+      syncPhonePrefix(form);
+      conocidos.push(phoneInput, countryInput);
+    }
+
+    conocidos.forEach((input) => {
       const field = input && input.closest(".field");
       if (field) field.hidden = true;
     });
 
-    if (consentInput && (!contactRequest || alreadyRecorded)) {
+    // Su consentimiento anterior era para escribirle por email. Si ahora deja
+    // el teléfono, tiene que volver a aceptarlo con el texto nuevo.
+    if (consentInput && tieneContacto && (!contactRequest || alreadyRecorded)) {
       consentInput.checked = true;
       const consent = consentInput.closest(".consent");
       if (consent) consent.hidden = true;
+    }
+
+    let aviso = "No necesitas volver a escribir tus datos en este dispositivo.";
+    if (!tieneContacto) {
+      aviso = "Solo nos falta tu país y tu teléfono para completar tu acceso.";
+    } else if (contactRequest && !alreadyRecorded) {
+      aviso = "Solo confirma que quieres que contactemos contigo.";
     }
 
     const identity = document.createElement("div");
@@ -184,9 +366,7 @@
       <div class="returning-lead-copy">
         <span>Datos reconocidos</span>
         <strong>Hola, ${escapeHtml(profile.nombre)}</strong>
-        <small>${contactRequest && !alreadyRecorded
-          ? "Solo confirma que quieres que contactemos contigo."
-          : "No necesitas volver a escribir tu nombre y email en este dispositivo."}</small>
+        <small>${aviso}</small>
       </div>
       <button class="returning-lead-change" type="button">No soy yo</button>
     `;
@@ -220,6 +400,9 @@
       const url = new URL(baseUrl);
       url.searchParams.set("name", payload.nombre);
       url.searchParams.set("email", payload.email);
+      // a1 responde la primera pregunta del evento, que en "Reunión
+      // Tradinverso" es el WhatsApp. Si cambia el orden, revisar esto.
+      if (payload.telefono) url.searchParams.set("a1", payload.telefono);
       return url.toString();
     } catch (error) {
       return baseUrl;
@@ -320,11 +503,12 @@
     const params = getParams();
     const savedProfile = getSavedProfile();
 
-    document.querySelectorAll("[data-lead-form]").forEach((form) => {
+    document.querySelectorAll("[data-lead-form]").forEach((form, index) => {
       const status = form.querySelector("[data-form-status]");
       const origenInput = form.querySelector('[name="origen"]');
 
       if (origenInput && params.origen) origenInput.value = params.origen;
+      injectContactFields(form, index);
       applySavedProfile(form, savedProfile);
 
       form.addEventListener("submit", async (event) => {
@@ -354,15 +538,42 @@
           via: form.dataset.libraryAccess !== undefined ? "biblioteca" : "recurso",
           origen: String(data.get("origen") || params.origen || "organico"),
           consentimiento: data.get("consentimiento") ? "si" : "no",
-          notas: ""
+          notas: "",
+          pais: String(data.get("pais") || "").trim().toUpperCase(),
+          telefono: ""
         };
+        payload.telefono = normalizePhone(data.get("telefono"), payload.pais);
 
         if (!payload.nombre || !payload.email || payload.consentimiento !== "si") {
           if (status) status.textContent = "Revisa nombre, email y consentimiento.";
           return;
         }
 
-        const alreadyRecorded = hasRecordedAccess(payload.email, payload.recurso);
+        if (!payload.pais) {
+          if (status) status.textContent = "Elige tu país.";
+          form.querySelector('[name="pais"]')?.focus();
+          return;
+        }
+
+        if (!payload.telefono) {
+          if (status) {
+            status.textContent = payload.pais === OTRO_PAIS
+              ? "Escribe el teléfono con el prefijo de tu país, por ejemplo +44 7700 900000."
+              : "Revisa el teléfono: escribe solo el número, sin el prefijo.";
+          }
+          const phoneInput = form.querySelector('[name="telefono"]');
+          if (phoneInput) {
+            phoneInput.closest(".field").hidden = false;
+            phoneInput.focus();
+          }
+          return;
+        }
+
+        // Si ya había pedido este recurso pero ahora deja un teléfono que no
+        // teníamos, se vuelve a enviar: si no, ese dato nunca llegaría a la hoja.
+        const perfilActual = getSavedProfile();
+        const telefonoNuevo = !perfilActual || perfilActual.telefono !== payload.telefono;
+        const alreadyRecorded = hasRecordedAccess(payload.email, payload.recurso) && !telefonoNuevo;
         if (submitButton) submitButton.disabled = true;
         if (status) {
           status.textContent = alreadyRecorded
@@ -377,6 +588,10 @@
             : await sendLead(payload);
           saveProfile(payload);
           markRecordedAccess(payload.email, payload.recurso);
+          // Quien tiene el pase lo guarda completo: la próxima vez entra directo.
+          if (window.TradinversoAccess && window.TradinversoAccess.hasPass()) {
+            window.TradinversoAccess.grantPass(payload);
+          }
 
           // Con los datos recién capturados, los enlaces a Calendly de esta
           // misma página ya no vuelven a pedirlos.
@@ -659,6 +874,8 @@
         window.tradinversoTrackLead({
           nombre: profile.nombre,
           email: profile.email,
+          telefono: profile.telefono,
+          pais: profile.pais,
           recurso: recurso,
           via: via,
           notas: origen ? "desde " + origen : ""

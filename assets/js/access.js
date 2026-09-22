@@ -53,9 +53,13 @@
   function grantPass(profile) {
     if (!profile || !profile.nombre || !profile.email) return null;
 
+    var anterior = getPass() || {};
     var pass = {
       nombre: String(profile.nombre).trim(),
       email: String(profile.email).trim().toLowerCase(),
+      // Si esta vez no llegan (acceso en un clic), se conservan los que había.
+      telefono: String(profile.telefono || anterior.telefono || "").trim(),
+      pais: String(profile.pais || anterior.pais || "").trim(),
       expiresAt: Date.now() + DURATION
     };
     write(PASS_KEY, pass);
