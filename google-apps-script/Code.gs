@@ -2,7 +2,7 @@ const SHEET_NAME = "Leads";
 const SPREADSHEET_ID = "1n-MnjkvHRd0F1Gu5JehfpRsDf3YsXKmXOnxytgfOTgY";
 const SUMMARY_SHEET_NAME = "Resumen";
 const UNIQUE_SHEET_NAME = "Únicos";
-const UNIQUE_HEADERS = ["nombre", "email", "recursos", "primer contacto", "último contacto", "recursos pedidos"];
+const UNIQUE_HEADERS = ["nombre", "email", "teléfono", "país", "recursos", "primer contacto", "último contacto", "recursos pedidos"];
 const HEADERS = [
   "fecha",
   "nombre",
@@ -12,7 +12,10 @@ const HEADERS = [
   "origen",
   "consentimiento",
   "repetido",
-  "notas"
+  "notas",
+  // Al final a propósito: así ninguna columna anterior cambia de posición.
+  "telefono",
+  "pais"
 ];
 
 function doPost(e) {
@@ -75,7 +78,10 @@ function writeLead(body) {
     body.origen || "",
     body.consentimiento || "",
     "",
-    body.notas || ""
+    body.notas || "",
+    // El apóstrofo obliga a guardarlo como texto: sin él, Sheets se come el "+".
+    body.telefono ? "'" + String(body.telefono).trim() : "",
+    String(body.pais || "").trim().toUpperCase()
   ]);
 
   // Asegura el formato de fecha en la fila recién añadida,
@@ -113,6 +119,13 @@ function getLeadSheet() {
   if (firstRow.join("") === "") {
     migrateLeadSheet(sheet);
     setupLeadSheet(sheet);
+  } else if (String(firstRow[HEADERS.length - 1]).trim() === "") {
+    // Hoja creada antes de añadir columnas nuevas: se completan las cabeceras
+    // y se rehace el formato una sola vez para que las nuevas queden iguales.
+    migrateLeadSheet(sheet);
+    const filter = sheet.getFilter();
+    if (filter && filter.getRange().getNumColumns() < HEADERS.length) filter.remove();
+    setupLeadSheet(sheet);
   }
 
   return sheet;
@@ -147,10 +160,17 @@ function groupByPerson(leads) {
     const resource = String(row[3] || "").trim();
 
     if (!people[email]) {
-      people[email] = { email: email, nombre: String(row[1] || "").trim(), first: null, last: null, resources: [] };
+      people[email] = { email: email, nombre: String(row[1] || "").trim(), telefono: "", pais: "", phoneDate: null, first: null, last: null, resources: [] };
     }
     const person = people[email];
     if (!person.nombre) person.nombre = String(row[1] || "").trim();
+    // Si alguien cambia de número, vale el más reciente.
+    const telefono = String(row[9] || "").trim();
+    if (telefono && (!person.phoneDate || date >= person.phoneDate)) {
+      person.telefono = telefono;
+      person.pais = String(row[10] || "").trim();
+      person.phoneDate = date;
+    }
     if (resource && person.resources.indexOf(resource) === -1) person.resources.push(resource);
     if (!Number.isNaN(date.getTime())) {
       if (!person.first || date < person.first) person.first = date;
@@ -179,15 +199,19 @@ function setupUniqueSheet(spreadsheet) {
       return [
         person.nombre,
         person.email,
+        person.telefono,
+        person.pais,
         person.resources.length,
         person.first,
         person.last,
         person.resources.join(", ")
       ];
     });
+    // Teléfono como texto antes de escribir, para conservar el "+".
+    sheet.getRange(2, 3, rows.length, 1).setNumberFormat("@");
     sheet.getRange(2, 1, rows.length, UNIQUE_HEADERS.length).setValues(rows);
-    sheet.getRange(2, 4, rows.length, 2).setNumberFormat("yyyy-mm-dd hh:mm");
-    sheet.getRange(2, 3, rows.length, 1).setHorizontalAlignment("center");
+    sheet.getRange(2, 6, rows.length, 2).setNumberFormat("yyyy-mm-dd hh:mm");
+    sheet.getRange(2, 4, rows.length, 2).setHorizontalAlignment("center");
   }
 
   sheet.setFrozenRows(1);
@@ -196,12 +220,14 @@ function setupUniqueSheet(spreadsheet) {
     .setFontColor("#ffffff")
     .setBackground("#06245c")
     .setHorizontalAlignment("center");
-  sheet.setColumnWidth(1, 200);
-  sheet.setColumnWidth(2, 250);
-  sheet.setColumnWidth(3, 90);
-  sheet.setColumnWidth(4, 150);
-  sheet.setColumnWidth(5, 150);
-  sheet.setColumnWidth(6, 420);
+  sheet.setColumnWidth(1, 200);  // nombre
+  sheet.setColumnWidth(2, 250);  // email
+  sheet.setColumnWidth(3, 150);  // teléfono
+  sheet.setColumnWidth(4, 70);   // país
+  sheet.setColumnWidth(5, 90);   // recursos
+  sheet.setColumnWidth(6, 150);  // primer contacto
+  sheet.setColumnWidth(7, 150);  // último contacto
+  sheet.setColumnWidth(8, 420);  // recursos pedidos
 
   if (!sheet.getFilter()) {
     sheet.getRange(1, 1, Math.max(people.length + 1, 2), UNIQUE_HEADERS.length).createFilter();
@@ -257,6 +283,15 @@ function migrateLeadSheet(sheet) {
       }
     }
   }
+
+  // Columnas de contacto añadidas después: van en su posición de HEADERS.
+  ["telefono", "pais"].forEach(function (name) {
+    const position = HEADERS.indexOf(name) + 1;
+    const header = String(sheet.getRange(1, position).getValue()).trim().toLowerCase();
+    if (header === name) return;
+    if (header !== "") sheet.insertColumnBefore(position);
+    sheet.getRange(1, position).setValue(name);
+  });
 }
 
 function setupLeadSheet(sheet) {
@@ -285,6 +320,8 @@ function setupLeadSheet(sheet) {
   sheet.setColumnWidth(7, 145);  // consentimiento
   sheet.setColumnWidth(8, 110);  // repetido
   sheet.setColumnWidth(9, 260);  // notas
+  sheet.setColumnWidth(10, 150); // telefono
+  sheet.setColumnWidth(11, 70);  // pais
 
   if (!sheet.getFilter()) {
     sheet.getRange(1, 1, sheet.getMaxRows(), HEADERS.length).createFilter();
