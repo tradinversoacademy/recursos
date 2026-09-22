@@ -38,6 +38,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "judas-swing",
+    title: "El Judas Swing de las 9:30",
+    description: "La trampa de la apertura de Nueva York: el primer movimiento te engaña y el real va hacia el otro lado.",
+    symbol: "JS",
+    type: "Vídeo + guía",
+    category: "operativas",
+    search: "judas swing apertura nueva york 9:30 930 manipulacion trampa falso movimiento traicion barrido liquidez stops giro reversion minimo vela nasdaq ict video",
+    cta: "Ver el vídeo"
+  },
+  {
     slug: "tipos-fair-value-gap",
     title: "Los 3 tipos de fair value gap",
     description: "Breakaway, el de siempre y el que no vale: la tercera vela decide cuál tienes y cómo se entra.",
