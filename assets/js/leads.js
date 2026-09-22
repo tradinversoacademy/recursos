@@ -137,7 +137,7 @@
     const opcion = ([code, nombre, dial]) =>
       `<option value="${code}" data-dial="${dial}"${code === selected ? " selected" : ""}>${nombre} (+${dial})</option>`;
     return `
-      <option value="" disabled${selected ? "" : " selected"}>Elige tu país</option>
+      <option value=""${selected ? "" : " selected"}>Elige tu país</option>
       <optgroup label="Más habituales">${HABITUALES.map(opcion).join("")}</optgroup>
       <optgroup label="Resto de países">${RESTO.map(opcion).join("")}</optgroup>
       <option value="${OTRO_PAIS}">Otro país</option>
@@ -168,14 +168,14 @@
     const bloque = document.createElement("template");
     bloque.innerHTML = `
       <div class="field field-country">
-        <label for="pais${sufijo}">País</label>
-        <select id="pais${sufijo}" name="pais" autocomplete="country" required>${countryOptions(detectCountry())}</select>
+        <label for="pais${sufijo}">País <span class="field-optional">(opcional)</span></label>
+        <select id="pais${sufijo}" name="pais" autocomplete="country">${countryOptions(detectCountry())}</select>
       </div>
       <div class="field field-phone">
-        <label for="telefono${sufijo}">Teléfono</label>
+        <label for="telefono${sufijo}">Teléfono <span class="field-optional">(opcional)</span></label>
         <div class="phone-input">
           <span class="phone-prefix" data-phone-prefix>+</span>
-          <input id="telefono${sufijo}" name="telefono" type="tel" inputmode="tel" required>
+          <input id="telefono${sufijo}" name="telefono" type="tel" inputmode="tel">
         </div>
       </div>
     `;
@@ -215,11 +215,14 @@
   }
 
   function saveProfile(payload) {
+    // Como el teléfono es opcional, dejarlo en blanco no borra el que ya había.
+    const anterior = readStoredValue(PROFILE_KEY, null);
+    const mismo = anterior && normalizeEmail(anterior.email) === normalizeEmail(payload.email);
     writeStoredValue(PROFILE_KEY, {
       nombre: payload.nombre,
       email: normalizeEmail(payload.email),
-      telefono: payload.telefono || "",
-      pais: payload.pais || "",
+      telefono: payload.telefono || (mismo && anterior.telefono) || "",
+      pais: payload.pais || (mismo && anterior.pais) || "",
       expiresAt: Date.now() + PROFILE_DURATION
     });
   }
@@ -345,18 +348,24 @@
       if (field) field.hidden = true;
     });
 
-    // Su consentimiento anterior era para escribirle por email. Si ahora deja
-    // el teléfono, tiene que volver a aceptarlo con el texto nuevo.
-    if (consentInput && tieneContacto && (!contactRequest || alreadyRecorded)) {
+    // País y teléfono son opcionales: a quien ya conocemos no se le para para
+    // pedírselos. Si los tenemos, se envían; si no, entra igual que siempre.
+    if (!tieneContacto && phoneInput && countryInput) {
+      // Sin enseñárselo no se envía el país que adivinamos por el idioma.
+      countryInput.value = "";
+      syncPhonePrefix(form);
+      phoneInput.closest(".field").hidden = true;
+      countryInput.closest(".field").hidden = true;
+    }
+
+    if (consentInput && (!contactRequest || alreadyRecorded)) {
       consentInput.checked = true;
       const consent = consentInput.closest(".consent");
       if (consent) consent.hidden = true;
     }
 
     let aviso = "No necesitas volver a escribir tus datos en este dispositivo.";
-    if (!tieneContacto) {
-      aviso = "Solo nos falta tu país y tu teléfono para completar tu acceso.";
-    } else if (contactRequest && !alreadyRecorded) {
+    if (contactRequest && !alreadyRecorded) {
       aviso = "Solo confirma que quieres que contactemos contigo.";
     }
 
@@ -549,17 +558,14 @@
           return;
         }
 
-        if (!payload.pais) {
-          if (status) status.textContent = "Elige tu país.";
-          form.querySelector('[name="pais"]')?.focus();
-          return;
-        }
-
-        if (!payload.telefono) {
+        // Opcional: vacío vale, pero si lo escriben tiene que poder guardarse bien.
+        const telefonoEscrito = String(data.get("telefono") || "").trim();
+        if (payload.pais === OTRO_PAIS) payload.pais = "";
+        if (telefonoEscrito && !payload.telefono) {
           if (status) {
-            status.textContent = payload.pais === OTRO_PAIS
-              ? "Escribe el teléfono con el prefijo de tu país, por ejemplo +44 7700 900000."
-              : "Revisa el teléfono: escribe solo el número, sin el prefijo.";
+            status.textContent = PREFIJOS[payload.pais]
+              ? "Revisa el teléfono: escribe solo el número, sin el prefijo."
+              : "Elige tu país o escribe el teléfono con su prefijo, por ejemplo +44 7700 900000.";
           }
           const phoneInput = form.querySelector('[name="telefono"]');
           if (phoneInput) {
@@ -572,7 +578,8 @@
         // Si ya había pedido este recurso pero ahora deja un teléfono que no
         // teníamos, se vuelve a enviar: si no, ese dato nunca llegaría a la hoja.
         const perfilActual = getSavedProfile();
-        const telefonoNuevo = !perfilActual || perfilActual.telefono !== payload.telefono;
+        const telefonoNuevo = Boolean(payload.telefono)
+          && (!perfilActual || (perfilActual.telefono || "") !== payload.telefono);
         const alreadyRecorded = hasRecordedAccess(payload.email, payload.recurso) && !telefonoNuevo;
         if (submitButton) submitButton.disabled = true;
         if (status) {

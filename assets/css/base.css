@@ -329,6 +329,12 @@ a.nav-pill:hover {
   cursor: pointer;
 }
 
+.field-optional {
+  color: var(--muted);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
 /* Prefijo del país pegado al número: se ve qué se va a guardar. */
 .phone-input {
   display: flex;

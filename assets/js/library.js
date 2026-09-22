@@ -24,9 +24,7 @@
     var knownBlock = document.querySelector("[data-gate-known]");
     var form = document.querySelector("[data-gate-form]");
 
-    // El acceso en un clic solo sirve si ya tenemos su teléfono. Si no, se
-    // queda el formulario, que le reconoce y le pide solo país y teléfono.
-    if (known && known.telefono && known.pais && knownBlock && form) {
+    if (known && knownBlock && form) {
       var name = document.querySelector("[data-gate-known-name]");
       if (name) name.textContent = "Hola, " + known.nombre;
       knownBlock.hidden = false;
@@ -42,8 +40,8 @@
           // igual que cualquier otro lead.
           form.querySelector('[name="nombre"]').value = known.nombre;
           form.querySelector('[name="email"]').value = known.email;
-          form.querySelector('[name="pais"]').value = known.pais;
-          form.querySelector('[name="telefono"]').value = known.telefono;
+          if (known.pais) form.querySelector('[name="pais"]').value = known.pais;
+          form.querySelector('[name="telefono"]').value = known.telefono || "";
           form.querySelector('[name="consentimiento"]').checked = true;
           form.hidden = false;
           form.requestSubmit();
