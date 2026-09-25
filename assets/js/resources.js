@@ -16,6 +16,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "estrategias-tradinverso",
+    title: "Las 3 estrategias de TRADINVERSO",
+    description: "Zonas, Liquidez y Nasdaq: las tres operativas mecánicas que usamos, con sus reglas y sus datos reales.",
+    symbol: "3E",
+    type: "Vídeo",
+    category: "programa",
+    search: "estrategias tradinverso metodologia zonas liquidez nasdaq orb eurusd gbpusd oro winrate win rate riesgo beneficio mecanica sistema resultados drawdown backtesting video",
+    cta: "Ver el vídeo"
+  },
+  {
     slug: "orb-nasdaq",
     title: "Estrategia ORB Nasdaq",
     description: "Rango inicial, confirmación y riesgo en la apertura de Nueva York.",

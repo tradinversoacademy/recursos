@@ -45,6 +45,7 @@ FORMATOS = {
     "checklist-entrada-mercado": "Checklist en PDF",
     "protocolo-mental-trader": "Guía PDF",
     "plan-trader-rentable": "Guía PDF",
+    "estrategias-tradinverso": "Vídeo de las 3 estrategias (se desbloquea al registrarse)",
     "metodo-c3": "Vídeo + reserva de llamada con el equipo",
     "programa-tradinverso": "Vídeo + reserva de llamada con el equipo",
 }
@@ -146,6 +147,10 @@ TEXTOS = {
     "plan-trader-rentable": (
         "Lleva mucho tiempo sin avanzar y no sabe qué está haciendo mal.",
         "Le señala los diez errores que tiene que dejar de repetir para proteger su proceso.",
+    ),
+    "estrategias-tradinverso": (
+        "Quiere saber cómo operamos de verdad y si hay datos detrás antes de dar el siguiente paso.",
+        "Le enseña en vídeo las tres estrategias (Zonas, Liquidez y Nasdaq) con sus reglas, win-rate, riesgo-beneficio y los resultados del año, incluido el mes malo.",
     ),
     "metodo-c3": (
         "Ya ha consumido varios recursos y pregunta cómo trabajamos.",
