@@ -3069,6 +3069,36 @@ body.has-success-modal {
   transform: rotate(18deg);
 }
 
+/* Portada de las 3 estrategias: el win-rate de cada una. */
+.strategies-cover {
+  background: linear-gradient(145deg, #03173b, #0d4a94);
+}
+
+.strategies-mark {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.strategies-mark span {
+  display: grid;
+  gap: 4px;
+  padding: 12px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
+  font-weight: 820;
+  text-align: center;
+}
+
+.strategies-mark b {
+  color: var(--sky);
+  font-size: 24px;
+  line-height: 1;
+}
+
 .library-gate {
   width: min(1160px, calc(100% - 32px));
   margin: 0 auto 40px;
@@ -3139,6 +3169,7 @@ body.has-success-modal {
 .is-locked .c3-mark,
 .is-locked .orb-mini-range,
 .is-locked .asia-range-mark,
+.is-locked .strategies-mark,
 .is-locked .program-stack,
 .is-locked .featured-library-grid .library-card-featured .resource-meta {
   display: none;

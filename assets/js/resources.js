@@ -12,8 +12,7 @@ window.TRADINVERSO_RESOURCES = [
     type: "Sistema formativo",
     category: "programa",
     search: "metodo c3 sistema tradinverso formacion consistencia rentabilidad",
-    cta: "Ver Método C3",
-    featured: true
+    cta: "Ver Método C3"
   },
   {
     slug: "estrategias-tradinverso",
@@ -23,7 +22,8 @@ window.TRADINVERSO_RESOURCES = [
     type: "Vídeo",
     category: "programa",
     search: "estrategias tradinverso metodologia zonas liquidez nasdaq orb eurusd gbpusd oro winrate win rate riesgo beneficio mecanica sistema resultados drawdown backtesting video",
-    cta: "Ver el vídeo"
+    cta: "Ver el vídeo",
+    featured: true
   },
   {
     slug: "orb-nasdaq",
