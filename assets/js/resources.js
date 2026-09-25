@@ -3,6 +3,8 @@
 // hidden: true   → el recurso existe y funciona, pero solo se accede por URL directa.
 // featured: true → ya tiene su tarjeta destacada en la biblioteca; aquí solo sirve
 //                  para que aparezca entre los recursos relacionados.
+// Orden: la lista de la biblioteca sigue este orden. Método C3, el programa y DATA
+//        van fijados al principio, justo debajo de los recursos principales.
 window.TRADINVERSO_RESOURCES = [
   {
     slug: "metodo-c3",
@@ -13,6 +15,26 @@ window.TRADINVERSO_RESOURCES = [
     category: "programa",
     search: "metodo c3 sistema tradinverso formacion consistencia rentabilidad",
     cta: "Ver Método C3"
+  },
+  {
+    slug: "programa-tradinverso",
+    title: "Todo lo que incluye TRADINVERSO",
+    description: "Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.",
+    symbol: "PT",
+    type: "Programa completo",
+    category: "programa",
+    search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
+    cta: "Ver el programa"
+  },
+  {
+    slug: "data-tradinverso",
+    title: "DATA: centro de control del trader",
+    description: "Journal técnico y emocional, cuentas y trading plan en una herramienta.",
+    symbol: "IA",
+    type: "Herramienta",
+    category: "herramientas",
+    search: "data inteligencia artificial journaling emociones cuentas trading plan",
+    cta: "Abrir DATA"
   },
   {
     slug: "estrategias-tradinverso",
@@ -146,26 +168,6 @@ window.TRADINVERSO_RESOURCES = [
     category: "operativas",
     search: "ifvg inverse fair value gap giro cambio intencion operativa",
     cta: "Abrir recurso"
-  },
-  {
-    slug: "programa-tradinverso",
-    title: "Todo lo que incluye TRADINVERSO",
-    description: "Formación, acompañamiento, directos, comunidad y tecnología en un mismo proceso.",
-    symbol: "PT",
-    type: "Programa completo",
-    category: "programa",
-    search: "programa tradinverso formacion acompañamiento directos comunidad challenge garantia",
-    cta: "Ver el programa"
-  },
-  {
-    slug: "data-tradinverso",
-    title: "DATA: centro de control del trader",
-    description: "Journal técnico y emocional, cuentas y trading plan en una herramienta.",
-    symbol: "IA",
-    type: "Herramienta",
-    category: "herramientas",
-    search: "data inteligencia artificial journaling emociones cuentas trading plan",
-    cta: "Abrir DATA"
   },
   {
     slug: "test-objetividad-sistema",
