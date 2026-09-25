@@ -19,9 +19,55 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CATALOGO = ROOT / "assets" / "js" / "resources.js"
 SALIDA = ROOT / "output" / "lista-setters.tsv"
+SALIDA_ENLACES = ROOT / "output" / "lista-setters-enlaces.tsv"
 BASE = "https://tradinversoacademy.github.io/recursos/recursos/"
 
-CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Enlace"]
+CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Formato", "Enlace"]
+
+# Qué recibe el lead al registrarse. Comprobado contra el formulario de cada página.
+FORMATOS = {
+    "judas-swing": "Vídeo + guía PDF",
+    "tipos-fair-value-gap": "Vídeo + guía PDF",
+    "mechas-velas": "Guía PDF",
+    "backtesting-orb": "Vídeo + plantilla de Google Sheets (se hace su propia copia)",
+    "amd": "Dos vídeos + guía PDF",
+    "amd-ifvg": "Vídeo + guía PDF de 11 páginas",
+    "manipulacion-maximos-minimos": "Guía PDF",
+    "modelo-liquidez-estructura-fvg": "Guía PDF",
+    "guia-5-conceptos-trading": "Guía PDF",
+    "ifvg": "Vídeo + guía PDF",
+    "orb-nasdaq": "Vídeo + guía PDF",
+    "rango-asiatico": "Vídeo + guía PDF",
+    "apertura-0000-nueva-york": "Guía PDF (solo por enlace directo, no sale en la biblioteca)",
+    "data-tradinverso": "Vídeo de la herramienta + guía PDF",
+    "test-objetividad-sistema": "Test interactivo con veredicto (se desbloquea al registrarse)",
+    "claridad-trader": "Vídeo diagnóstico (se desbloquea al registrarse)",
+    "checklist-entrada-mercado": "Checklist en PDF",
+    "protocolo-mental-trader": "Guía PDF",
+    "plan-trader-rentable": "Guía PDF",
+    "metodo-c3": "Vídeo + reserva de llamada con el equipo",
+    "programa-tradinverso": "Vídeo + reserva de llamada con el equipo",
+}
+
+CABECERA_ENLACES = ["Enlace", "Para qué sirve", "Cuándo usarlo", "URL"]
+ENLACES_CLAVE = [
+    ("Biblioteca completa",
+     "Todos los recursos en una sola página. Con un registro desbloquea todo.",
+     "Cuando el lead quiere ver más o no sabes cuál mandarle.",
+     "https://tradinversoacademy.github.io/recursos/"),
+    ("Clase gratuita",
+     "La masterclass: una estrategia sencilla que dice dónde comprar, dónde vender y cuándo no operar.",
+     "Siguiente paso después de cualquier recurso, o para quien pregunta cómo trabajamos.",
+     "https://clase.tradinverso.com/"),
+    ("Comunidad de WhatsApp",
+     "Grupo gratuito: operativas en directo, contenido exclusivo, avisos de recursos nuevos y dudas.",
+     "Para mantener el contacto con leads fríos o templados que aún no están para llamada.",
+     "https://chat.whatsapp.com/EczatgUWEtQCCroDNuRXF5"),
+    ("Agendar llamada",
+     "Llamada de diagnóstico con el equipo para ver si el lead encaja en el programa.",
+     "Lead caliente: pregunta precio, qué incluye o quiere empezar.",
+     "https://calendly.com/tradinverso/reunion-tradinverso"),
+]
 
 # slug: (dolor del lead, lo que se lleva)
 TEXTOS = {
@@ -63,11 +109,11 @@ TEXTOS = {
     ),
     "ifvg": (
         "Entra en los giros demasiado pronto y se come el movimiento en contra.",
-        "Le enseña cómo un fair value gap invertido confirma el cambio de intención antes de buscar la entrada.",
+        "Le enseña con vídeo y guía cómo un fair value gap invertido confirma el cambio de intención antes de buscar la entrada.",
     ),
     "orb-nasdaq": (
         "Quiere una estrategia concreta, con una hora fija, en lugar de más teoría.",
-        "Le da la operativa ORB en la apertura de Nueva York: rango inicial, confirmación y gestión del riesgo.",
+        "Le da la operativa ORB en la apertura de Nueva York en vídeo y guía: rango inicial, confirmación y gestión del riesgo.",
     ),
     "rango-asiatico": (
         "Opera de madrugada o en sesión europea sin ninguna referencia clara.",
@@ -119,13 +165,17 @@ def cargar_catalogo():
     return json.loads(re.sub(r",(\s*[}\]])", r"\1", "\n".join(lineas)))
 
 
+def a_tsv(filas):
+    return "\n".join("\t".join(celda for celda in fila) for fila in filas)
+
+
 def main():
     catalogo = cargar_catalogo()
-    faltan = [r["slug"] for r in catalogo if r["slug"] not in TEXTOS]
+    faltan = [r["slug"] for r in catalogo if r["slug"] not in TEXTOS or r["slug"] not in FORMATOS]
     if faltan:
         raise SystemExit(
-            "Sin dolor/solución escritos para: " + ", ".join(faltan)
-            + "\nAñádelos en TEXTOS antes de actualizar la hoja del setter."
+            "Sin dolor, solución o formato para: " + ", ".join(faltan)
+            + "\nAñádelos en TEXTOS y FORMATOS antes de actualizar la hoja del setter."
         )
 
     # Los dos del programa van al final: son para lead caliente, no para nutrir.
@@ -134,13 +184,20 @@ def main():
     filas = [CABECERA]
     for recurso in ordenados:
         dolor, solucion = TEXTOS[recurso["slug"]]
-        filas.append([recurso["title"], dolor, solucion, BASE + recurso["slug"] + "/"])
+        filas.append([
+            recurso["title"], dolor, solucion, FORMATOS[recurso["slug"]],
+            BASE + recurso["slug"] + "/",
+        ])
 
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
-    texto = "\n".join("\t".join(celda for celda in fila) for fila in filas)
-    SALIDA.write_text(texto, encoding="utf-8", newline="\n")
+    SALIDA.write_text(a_tsv(filas), encoding="utf-8", newline="\n")
+    SALIDA_ENLACES.write_text(
+        a_tsv([CABECERA_ENLACES] + [list(fila) for fila in ENLACES_CLAVE]),
+        encoding="utf-8", newline="\n",
+    )
     print(SALIDA)
-    print(f"{len(filas) - 1} recursos")
+    print(SALIDA_ENLACES)
+    print(f"{len(filas) - 1} recursos, {len(ENLACES_CLAVE)} enlaces clave")
 
 
 if __name__ == "__main__":
