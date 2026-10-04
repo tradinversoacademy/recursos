@@ -47,7 +47,7 @@ CONFIGURACIONES = [
         "rango": "9:30 - 10:00",
         "ejecucion": "5 minutos",
         "titulo": "Vela de 30 minutos, ejecución en 5",
-        "texto": "El rango se forma con la primera media hora de Nueva York. Es el más amplio y el más tranquilo: tienes más tiempo para decidir y la señal llega más tarde.",
+        "texto": "El rango se forma con la primera media hora de Nueva York. Es el más amplio y el más tranquilo, y se puede operar de dos formas: la ruptura, como siempre, o el rechazo.",
         "color": NAVY,
     },
     {
@@ -67,6 +67,135 @@ CONFIGURACIONES = [
         "color": GREEN,
     },
 ]
+
+
+# Vela de 30: las seis primeras velas de 5 minutos forman el rango (máximo 70,
+# mínimo 50). Después, o el precio rompe y se acepta fuera (ruptura) o sale,
+# no se acepta y vuelve dentro (rechazo).
+RANGO_30 = [
+    (58, 62, 64, 55),
+    (62, 56, 63, 52),
+    (56, 66, 68, 55),
+    (66, 60, 67, 50),
+    (60, 67, 70, 59),
+    (67, 63, 68, 61),
+]
+CASOS_30 = {
+    "ruptura": {
+        "velas": RANGO_30 + [
+            (63, 72, 73, 62),
+            (72, 81, 82, 71),
+            (81, 79, 83, 77),
+            (79, 76, 80, 75),
+            (76, 84, 85, 75),
+            (84, 90, 91, 83),
+        ],
+        "fvg": (73, 77, 7),
+        "entrada": 77,
+        "stop": 69,
+        "objetivo": 93,
+        "marca": (7, "RUPTURA"),
+        "nota": "COMPRA EN EL FVG",
+        "compra": True,
+    },
+    "rechazo": {
+        "velas": RANGO_30 + [
+            (68, 73, 75, 67),
+            (73, 62, 74, 61),
+            (62, 58, 64, 56),
+            (58, 65, 66, 57),
+            (65, 57, 66, 55),
+            (57, 48, 58, 46),
+            (48, 44, 50, 42),
+        ],
+        "fvg": (64, 67, 7),
+        "entrada": 64,
+        "stop": 76,
+        "objetivo": 40,
+        "marca": (6, "RECHAZO"),
+        "nota": "VENTA EN EL FVG",
+        "compra": False,
+    },
+}
+
+
+def vela30_chart(c, x, y, width, height, caso):
+    datos = CASOS_30[caso]
+    velas = datos["velas"]
+    c.setFillColor(PAPER)
+    c.setStrokeColor(LINE)
+    c.roundRect(x, y - height, width, height, 7, fill=1, stroke=1)
+
+    zona_x = x + 14
+    zona_w = width - 92
+    pad_top, pad_bottom = 18, 26
+    alto = height - pad_top - pad_bottom
+    base = y - height + pad_bottom
+    precios = [v[2] for v in velas] + [v[3] for v in velas] + [datos["stop"], datos["objetivo"]]
+    suelo = min(precios) - 2
+    rango = max(precios) + 2 - suelo
+
+    def py(precio):
+        return base + ((precio - suelo) / rango) * alto
+
+    paso = zona_w / len(velas)
+    ancho = min(9, paso * 0.5)
+
+    def vx(indice):
+        return zona_x + paso * (indice + 0.5)
+
+    # Rango de la vela de 30.
+    x1 = zona_x + paso * 6
+    c.setFillColor(Color(NAVY.red, NAVY.green, NAVY.blue, 0.07))
+    c.setStrokeColor(NAVY)
+    c.setLineWidth(1.1)
+    c.rect(zona_x + 2, py(50), x1 - zona_x - 4, py(70) - py(50), fill=1, stroke=1)
+    c.setDash(3, 3)
+    c.setLineWidth(0.8)
+    for nivel in (70, 50):
+        c.line(x1, py(nivel), zona_x + zona_w, py(nivel))
+    c.setDash()
+    c.setFillColor(NAVY)
+    c.setFont("Helvetica-Bold", 6.5)
+    c.drawString(zona_x + 4, py(50) - 10, "RANGO 30 MIN")
+
+    # Fair value gap.
+    bajo_fvg, alto_fvg, desde = datos["fvg"]
+    inicio = vx(desde) - paso * 0.5
+    c.setFillColor(Color(BLUE.red, BLUE.green, BLUE.blue, 0.18))
+    c.rect(inicio, py(bajo_fvg), zona_x + zona_w - inicio, py(alto_fvg) - py(bajo_fvg), fill=1, stroke=0)
+
+    # Entrada, stop y objetivo.
+    for precio, texto, color in (
+        (datos["entrada"], "ENTRADA FVG", BLUE),
+        (datos["stop"], "STOP", RED),
+        (datos["objetivo"], "OBJETIVO 2:1", GREEN),
+    ):
+        c.setStrokeColor(color)
+        c.setLineWidth(0.9)
+        c.line(inicio, py(precio), zona_x + zona_w, py(precio))
+        c.setFillColor(color)
+        c.setFont("Helvetica-Bold", 6.5)
+        c.drawString(zona_x + zona_w + 5, py(precio) - 2.3, texto)
+
+    for indice, (apertura, cierre, alto_v, bajo_v) in enumerate(velas):
+        cx = vx(indice)
+        color = GREEN if cierre >= apertura else RED
+        c.setStrokeColor(color)
+        c.setFillColor(color)
+        c.setLineWidth(1.1)
+        c.line(cx, py(bajo_v), cx, py(alto_v))
+        abajo = py(min(apertura, cierre))
+        c.rect(cx - ancho / 2, abajo, ancho, max(py(max(apertura, cierre)) - abajo, 2), fill=1, stroke=0)
+
+    indice, texto = datos["marca"]
+    c.setFillColor(INK)
+    c.setFont("Helvetica-Bold", 7)
+    c.drawRightString(vx(indice) - 7, py(velas[indice][2]) - 3, texto)
+
+    c.setFillColor(GREEN if datos["compra"] else RED)
+    c.setFont("Helvetica-Bold", 8.5)
+    c.drawRightString(x + width - 10, y - height + 9, datos["nota"])
 
 
 def rangos_chart(c, x, y, width, height):
@@ -270,13 +399,60 @@ def build():
     paragraph(c, "Es la configuración del vídeo. Las otras dos funcionan con las mismas reglas.", 54, 76, W - 108, size=9, leading=12)
     c.showPage()
 
-    # Página 4 - Lo que no cambia
-    page_base(c, "Lo que no cambia", 4)
+    # Página 4 - Las dos formas de la vela de 30
+    page_base(c, "Vela de 30 minutos", 4)
     page_title(
         c,
-        "03 - Las mismas reglas",
+        "03 - Vela de 30 minutos",
+        "Dos formas de operarla",
+        "Con el rango de la primera media hora puedes operar la ruptura, igual que siempre, o el rechazo: el precio sale del rango, no se acepta fuera y entras en dirección contraria, hacia dentro del rango.",
+    )
+    mitad = (W - 76 - 14) / 2
+    for indice, (caso, titulo) in enumerate((("ruptura", "01 - LA RUPTURA"), ("rechazo", "02 - EL RECHAZO"))):
+        bx = 38 + indice * (mitad + 14)
+        c.setFillColor(BLUE)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(bx, H - 236, titulo)
+        vela30_chart(c, bx, H - 246, mitad, 250, caso)
+    bloques = [
+        ("RUPTURA", "Como siempre",
+         "El precio rompe el máximo o el mínimo y se acepta fuera del rango. Esperas el retroceso al FVG en 5 minutos y entras a favor de la ruptura."),
+        ("RECHAZO", "Al lado contrario",
+         "El precio sale del rango pero no se acepta fuera: vuelve a entrar con fuerza y deja un FVG en dirección contraria. Entras en el retesteo de ese FVG, hacia dentro del rango."),
+        ("RIESGO", "Stop y objetivo",
+         "En el rechazo, el stop va por encima del extremo que hizo el precio fuera del rango (por debajo, si el rechazo es en el mínimo). El objetivo, al menos 2:1."),
+    ]
+    yy = H - 512
+    for tag, titulo, texto in bloques:
+        c.setFillColor(PAPER)
+        c.setStrokeColor(LINE)
+        c.roundRect(38, yy - 70, W - 76, 70, 7, fill=1, stroke=1)
+        c.setFillColor(BLUE)
+        c.roundRect(54, yy - 34, 86, 22, 5, fill=1, stroke=0)
+        c.setFillColor(white)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawCentredString(97, yy - 26, tag)
+        c.setFillColor(INK)
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(154, yy - 27, titulo)
+        paragraph(c, texto, 154, yy - 44, W - 210, size=8.8, leading=11.6)
+        yy -= 78
+    c.setFillColor(DARK)
+    c.roundRect(38, 42, W - 76, 50, 7, fill=1, stroke=0)
+    c.setFillColor(white)
+    c.setFont("Helvetica-Bold", 11.5)
+    c.drawString(54, 72, "Salir del rango no es romperlo.")
+    paragraph(c, "Si el precio no se acepta fuera, lo que tienes es un rechazo, y se opera al revés.",
+              54, 55, W - 108, size=9, leading=12, color=Color(1, 1, 1, 0.76))
+    c.showPage()
+
+    # Página 5 - Lo que no cambia
+    page_base(c, "Lo que no cambia", 5)
+    page_title(
+        c,
+        "04 - Las mismas reglas",
         "El modelo de entrada es idéntico",
-        "Da igual la vela que elijas: se entra igual que en el vídeo. Marca el rango, espera la ruptura con confirmación y ejecuta con el riesgo definido.",
+        "Da igual la vela que elijas: la ruptura se entra igual que en el vídeo. Marca el rango, espera la ruptura con confirmación y ejecuta con el riesgo definido.",
     )
     reglas = [
         ("RANGO", "Marca el máximo y el mínimo", "De la vela que hayas elegido: 5, 15 o 30 minutos desde las 9:30. No marques nada hasta que la vela haya cerrado."),
@@ -312,11 +488,11 @@ def build():
               54, 76, W - 108, size=9, leading=12, color=Color(1, 1, 1, 0.76))
     c.showPage()
 
-    # Página 5 - Cómo elegir
-    page_base(c, "Cómo elegir", 5)
+    # Página 6 - Cómo elegir
+    page_base(c, "Cómo elegir", 6)
     page_title(
         c,
-        "04 - Encaja la estrategia en tu día",
+        "05 - Encaja la estrategia en tu día",
         "Qué cambia al elegir una u otra",
         "No hay una configuración mejor que otra: hay una que encaja con tu horario, con tu experiencia y con cuánto tiempo puedes estar delante de la pantalla.",
     )
@@ -376,11 +552,11 @@ def build():
     paragraph(c, "La tienes en la biblioteca: tradinversoacademy.github.io/recursos", 54, 84, W - 108, size=9, leading=12)
     c.showPage()
 
-    # Página 6 - Checklist
-    page_base(c, "Checklist", 6)
+    # Página 7 - Checklist
+    page_base(c, "Checklist", 7)
     page_title(
         c,
-        "05 - Checklist",
+        "06 - Checklist",
         "Antes de la apertura",
         "Repásalo cada día antes de las 9:30. Si falta la confirmación, el stop o el objetivo, todavía no hay operación.",
     )
@@ -389,16 +565,17 @@ def build():
         ("02", "Sé en qué temporalidad voy a ejecutar y no la voy a cambiar durante la sesión."),
         ("03", "He esperado a que cierre la vela de rango antes de marcar el máximo y el mínimo."),
         ("04", "La ruptura muestra intención: aceptación fuera del rango, no solo una mecha."),
-        ("05", "Hay retroceso al fair value gap y confirmación en mi temporalidad de ejecución."),
-        ("06", "El stop está detrás de la estructura protegida."),
-        ("07", "El objetivo es liquidez o un nivel de sesión con recorrido suficiente."),
-        ("08", "Si el precio ya se ha escapado, no persigo la entrada."),
-        ("09", "Registro la operación con la configuración que he usado."),
+        ("05", "Con la vela de 30, si opero el rechazo: el precio ha vuelto dentro del rango y ha dejado un FVG en contra."),
+        ("06", "Hay retroceso al fair value gap y confirmación en mi temporalidad de ejecución."),
+        ("07", "El stop está detrás de la estructura protegida."),
+        ("08", "El objetivo es liquidez o un nivel de sesión con recorrido suficiente."),
+        ("09", "Si el precio ya se ha escapado, no persigo la entrada."),
+        ("10", "Registro la operación con la configuración que he usado."),
     ]
     yy = H - 245
     for numero, texto in items:
         checklist_row(c, yy, numero, texto)
-        yy -= 44
+        yy -= 42
     c.setFillColor(DARK)
     c.roundRect(38, 88, W - 76, 84, 7, fill=1, stroke=0)
     c.setFillColor(SKY)
@@ -411,18 +588,18 @@ def build():
               54, 102, W - 108, size=9.2, leading=12, color=Color(1, 1, 1, 0.76))
     c.showPage()
 
-    # Página 7 - Siguiente paso
-    page_base(c, "Tu proceso", 7)
+    # Página 8 - Siguiente paso
+    page_base(c, "Tu proceso", 8)
     page_title(
         c,
-        "06 - Integración",
+        "07 - Integración",
         "Convierte tu configuración en datos",
         "Registra cada apertura con la vela de rango que has usado. En veinte sesiones sabrás si tu configuración encaja contigo o si necesitas otra.",
     )
     campos = [
         ("Vela de rango", "5 / 15 / 30 minutos"),
         ("Ejecución", "1 / 5 minutos"),
-        ("Dirección de la ruptura", "Arriba / Abajo"),
+        ("Tipo de entrada", "Ruptura / Rechazo (vela de 30)"),
         ("Confirmación", "Retroceso al FVG / Sin confirmación"),
         ("Resultado", "R y si llegó al objetivo"),
         ("Aprendizaje", "Qué repetir o corregir"),

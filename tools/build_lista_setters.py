@@ -75,7 +75,7 @@ ENLACES_CLAVE = [
 TEXTOS = {
     "orb-temporalidades": (
         "Le gusta el ORB pero no puede o no quiere operar con la vela de 5 minutos y ejecutar en 1: no tiene tiempo, se agobia con la velocidad o no le encaja el horario.",
-        "Le enseña que el mismo ORB funciona con la vela de 30 minutos ejecutando en 5, con la de 15 ejecutando en 1 o en 5, o con la de 5 ejecutando en 1 como lo hacemos nosotros, con las mismas entradas. Vídeo del ORB y guía en PDF.",
+        "Le enseña que el mismo ORB funciona con la vela de 30 minutos ejecutando en 5, con la de 15 ejecutando en 1 o en 5, o con la de 5 ejecutando en 1 como lo hacemos nosotros, con las mismas entradas. Con la vela de 30 también puede operar el rechazo del rango hacia dentro. Vídeo del ORB y guía en PDF.",
     ),
     "judas-swing": (
         "Entra en el primer movimiento de la apertura y el precio se gira justo después. Siente que el mercado va a por su stop.",
