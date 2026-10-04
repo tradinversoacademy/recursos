@@ -47,6 +47,7 @@ CARDS = {
     "judas-swing": ("El Judas Swing de las 9:30", "La trampa de la apertura de Nueva York"),
     "tipos-fair-value-gap": ("Los 3 fair value gaps", "La tercera vela decide cuál tienes"),
     "mechas-velas": ("Cómo leer las mechas", "Quién tiene el control del mercado"),
+    "orb-temporalidades": ("ORB: 30, 15 o 5 min", "La misma estrategia en tu temporalidad"),
     "estrategias-tradinverso": ("Las 3 estrategias", "Zonas, Liquidez y Nasdaq con datos reales"),
 }
 

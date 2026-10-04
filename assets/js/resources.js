@@ -70,6 +70,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "orb-temporalidades",
+    title: "El ORB en 3 temporalidades",
+    description: "Vela de 30, de 15 o de 5 minutos en la apertura de Nueva York: la misma estrategia y las mismas entradas.",
+    symbol: "ORB",
+    type: "Vídeo + guía",
+    category: "operativas",
+    search: "orb opening range breakout temporalidades vela 30 minutos 15 minutos 5 minutos 1 minuto ejecucion rango apertura nueva york 9:30 930 nasdaq timeframe configuracion fvg video",
+    cta: "Ver el vídeo"
+  },
+  {
     slug: "judas-swing",
     title: "El Judas Swing de las 9:30",
     description: "La trampa de la apertura de Nueva York: el primer movimiento te engaña y el real va hacia el otro lado.",
