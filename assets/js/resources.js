@@ -70,6 +70,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "vela-diaria-anterior",
+    title: "El modelo de la vela diaria",
+    description: "Máximo, mínimo y 50% de la vela de ayer: qué lado buscar hoy, dónde está el objetivo y cuándo no operar.",
+    symbol: "D1",
+    type: "Guía + modelo",
+    category: "operativas",
+    search: "vela diaria anterior maximo minimo 50% cincuenta equilibrio pdh pdl dia anterior 15 minutos barrido liquidez premium descuento objetivo modelo",
+    cta: "Abrir recurso"
+  },
+  {
     slug: "orb-temporalidades",
     title: "El ORB en 3 temporalidades",
     description: "Vela de 30, de 15 o de 5 minutos en la apertura de Nueva York: la misma estrategia y las mismas entradas.",

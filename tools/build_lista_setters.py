@@ -26,6 +26,7 @@ CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Formato", "Enl
 
 # Qué recibe el lead al registrarse. Comprobado contra el formulario de cada página.
 FORMATOS = {
+    "vela-diaria-anterior": "Guía PDF",
     "orb-temporalidades": "Vídeo + guía PDF",
     "judas-swing": "Vídeo + guía PDF",
     "tipos-fair-value-gap": "Vídeo + guía PDF",
@@ -73,6 +74,10 @@ ENLACES_CLAVE = [
 
 # slug: (dolor del lead, lo que se lleva)
 TEXTOS = {
+    "vela-diaria-anterior": (
+        "Opera sin un plan claro para el día: no sabe si buscar compras o ventas, ni hasta dónde llevar la operación.",
+        "Le da un modelo sencillo con la vela diaria anterior: máximo, mínimo y 50%. Le dice qué lado buscar, que el 50% es el primer objetivo y cuándo no operar. Guía en PDF con compra, venta y checklist.",
+    ),
     "orb-temporalidades": (
         "Le gusta el ORB pero no puede o no quiere operar con la vela de 5 minutos y ejecutar en 1: no tiene tiempo, se agobia con la velocidad o no le encaja el horario.",
         "Le enseña que el mismo ORB funciona con la vela de 30 minutos ejecutando en 5, con la de 15 ejecutando en 1 o en 5, o con la de 5 ejecutando en 1 como lo hacemos nosotros, con las mismas entradas. Con la vela de 30 también puede operar el rechazo del rango hacia dentro. Vídeo del ORB y guía en PDF.",
