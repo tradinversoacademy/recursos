@@ -21,8 +21,8 @@ MUTED = HexColor("#566578")
 LINE = HexColor("#D9E6FB")
 PAPER = HexColor("#F7FAFF")
 
-RANGO_URL = "https://tradinversoacademy.github.io/recursos/recursos/rango-asiatico/"
-AMD_IFVG_URL = "https://tradinversoacademy.github.io/recursos/recursos/amd-ifvg/"
+RANGO_URL = "https://recursos.tradinverso.com/recursos/rango-asiatico/"
+AMD_IFVG_URL = "https://recursos.tradinverso.com/recursos/amd-ifvg/"
 
 
 def wrap(text, font, size, max_width):

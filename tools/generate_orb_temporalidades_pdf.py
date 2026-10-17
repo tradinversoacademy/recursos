@@ -549,7 +549,7 @@ def build():
     c.setFillColor(INK)
     c.setFont("Helvetica-Bold", 12.5)
     c.drawString(54, 103, "Mide tu configuración con la plantilla de backtesting del ORB.")
-    paragraph(c, "La tienes en la biblioteca: tradinversoacademy.github.io/recursos", 54, 84, W - 108, size=9, leading=12)
+    paragraph(c, "La tienes en la biblioteca: recursos.tradinverso.com", 54, 84, W - 108, size=9, leading=12)
     c.showPage()
 
     # Página 7 - Checklist

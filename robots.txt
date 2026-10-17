@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tradinversoacademy.github.io/recursos/sitemap.xml
+Sitemap: https://recursos.tradinverso.com/sitemap.xml

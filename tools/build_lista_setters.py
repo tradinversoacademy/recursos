@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOGO = ROOT / "assets" / "js" / "resources.js"
 SALIDA = ROOT / "output" / "lista-setters.tsv"
 SALIDA_ENLACES = ROOT / "output" / "lista-setters-enlaces.tsv"
-BASE = "https://tradinversoacademy.github.io/recursos/recursos/"
+BASE = "https://recursos.tradinverso.com/recursos/"
 
 CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Formato", "Enlace"]
 
@@ -57,7 +57,7 @@ ENLACES_CLAVE = [
     ("Biblioteca completa",
      "Todos los recursos en una sola página. Con un registro desbloquea todo.",
      "Cuando el lead quiere ver más o no sabes cuál mandarle.",
-     "https://tradinversoacademy.github.io/recursos/"),
+     "https://recursos.tradinverso.com/"),
     ("Clase gratuita",
      "La masterclass: una estrategia sencilla que dice dónde comprar, dónde vender y cuándo no operar.",
      "Siguiente paso después de cualquier recurso, o para quien pregunta cómo trabajamos.",

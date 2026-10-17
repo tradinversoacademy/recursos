@@ -14,7 +14,7 @@ from build_library import load_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = "https://tradinversoacademy.github.io/recursos/"
+BASE = "https://recursos.tradinverso.com/"
 
 
 def canonical_for(path):
