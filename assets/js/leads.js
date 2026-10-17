@@ -892,11 +892,11 @@
   }
 
   function getResourceSlug() {
+    // Cada recurso vive en /<slug>/; el slug se reconoce contra el catálogo.
+    const slugs = (window.TRADINVERSO_RESOURCES || []).map((resource) => resource.slug);
     const parts = window.location.pathname.split("/").filter(Boolean);
     for (let i = parts.length - 1; i >= 0; i--) {
-      if (parts[i] === "recursos" && parts[i + 1] && parts[i + 1].indexOf(".html") === -1) {
-        return parts[i + 1];
-      }
+      if (slugs.includes(parts[i])) return parts[i];
     }
     return "";
   }

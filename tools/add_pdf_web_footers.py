@@ -18,7 +18,7 @@ FOOTER_VERSION = "1"
 
 
 def public_pdfs() -> list[Path]:
-    folders = (ROOT / "output" / "pdf", ROOT / "recursos")
+    folders = (ROOT / "output" / "pdf", *(page.parent for page in ROOT.glob("*/index.html")))
     return sorted(
         path
         for folder in folders

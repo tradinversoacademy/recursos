@@ -564,12 +564,12 @@ def build_asian_range(path):
 
 
 def main():
-    amd_path = ROOT / "recursos" / "amd-ifvg" / "guia-amd-ifvg.pdf"
-    orb_path = ROOT / "recursos" / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
-    data_path = ROOT / "recursos" / "data-tradinverso" / "guia-data-tradinverso.pdf"
-    ifvg_path = ROOT / "recursos" / "ifvg" / "guia-ifvg.pdf"
-    protocol_path = ROOT / "recursos" / "protocolo-mental-trader" / "protocolo-mental-trader.pdf"
-    asian_range_path = ROOT / "recursos" / "rango-asiatico" / "guia-rango-asiatico.pdf"
+    amd_path = ROOT / "amd-ifvg" / "guia-amd-ifvg.pdf"
+    orb_path = ROOT / "orb-nasdaq" / "guia-orb-nasdaq.pdf"
+    data_path = ROOT / "data-tradinverso" / "guia-data-tradinverso.pdf"
+    ifvg_path = ROOT / "ifvg" / "guia-ifvg.pdf"
+    protocol_path = ROOT / "protocolo-mental-trader" / "protocolo-mental-trader.pdf"
+    asian_range_path = ROOT / "rango-asiatico" / "guia-rango-asiatico.pdf"
     build_amd(amd_path)
     build_orb(orb_path)
     build_data(data_path)

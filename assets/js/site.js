@@ -4,12 +4,13 @@
   var VSL_URL = "https://clase.tradinverso.com/";
 
   function getResourceSlug() {
-    // La web vive en /recursos/ (nombre del repo) y los recursos en /recursos/recursos/<slug>/,
-    // así que buscamos el último segmento "recursos" seguido de una carpeta.
+    // Cada recurso vive en /<slug>/ (recursos.tradinverso.com/<slug>/). El slug se
+    // reconoce contra el catálogo, así funciona igual en local y en producción.
+    var catalog = window.TRADINVERSO_RESOURCES || [];
     var parts = window.location.pathname.split("/").filter(Boolean);
     for (var i = parts.length - 1; i >= 0; i--) {
-      if (parts[i] === "recursos" && parts[i + 1] && parts[i + 1].indexOf(".html") === -1) {
-        return parts[i + 1];
+      for (var j = 0; j < catalog.length; j++) {
+        if (catalog[j].slug === parts[i]) return parts[i];
       }
     }
     return null;
@@ -168,7 +169,7 @@
     headingCopy.appendChild(title);
     var libraryLink = document.createElement("a");
     libraryLink.className = "nav-pill";
-    libraryLink.href = "../../index.html";
+    libraryLink.href = "../index.html";
     libraryLink.textContent = "Ver la biblioteca completa";
     heading.appendChild(headingCopy);
     heading.appendChild(libraryLink);

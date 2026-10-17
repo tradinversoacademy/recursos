@@ -119,7 +119,7 @@
       var description = document.createElement("p");
       description.textContent = resource.description;
       var link = document.createElement("a");
-      link.href = "recursos/" + resource.slug + "/index.html";
+      link.href = resource.slug + "/index.html";
       link.innerHTML = "";
       link.appendChild(document.createTextNode(resource.cta + " "));
       var arrow = document.createElement("span");

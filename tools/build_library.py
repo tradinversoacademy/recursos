@@ -41,7 +41,7 @@ def render_card(resource):
             <div class="resource-list-top"><span class="resource-symbol">{escape(resource['symbol'])}</span><span class="resource-list-type">{escape(resource['type'])}</span></div>
             <h3>{escape(resource['title'])}</h3>
             <p>{escape(resource['description'])}</p>
-            <a href="recursos/{escape(resource['slug'])}/index.html">{escape(resource['cta'])} <span aria-hidden="true">&rarr;</span></a>
+            <a href="{escape(resource['slug'])}/index.html">{escape(resource['cta'])} <span aria-hidden="true">&rarr;</span></a>
           </article>"""
 
 

@@ -21,10 +21,8 @@ def canonical_for(path):
     """URL canónica de una página del sitio."""
     if path.name == "index.html" and path.parent == ROOT:
         return BASE
-    if path.name == "recurso.html":
-        # El desarrollo largo consolida en la landing del recurso.
-        return f"{BASE}recursos/{path.parent.name}/"
-    return f"{BASE}recursos/{path.parent.name}/"
+    # El desarrollo largo (recurso.html) también consolida en la landing del recurso.
+    return f"{BASE}{path.parent.name}/"
 
 
 def apply_canonical(path):
@@ -65,14 +63,19 @@ def main():
     # Los recursos ocultos existen pero no se anuncian en el sitemap.
     public = {item["slug"] for item in catalog if not item.get("hidden")}
 
-    pages = [ROOT / "index.html"] + sorted(ROOT.glob("recursos/*/*.html"))
+    # Cada recurso vive en /<slug>/. La carpeta recursos/ solo guarda las
+    # redirecciones de las URL antiguas, que llevan su propio canonical.
+    slugs = [item["slug"] for item in catalog]
+    pages = [ROOT / "index.html"] + sorted(
+        page for slug in slugs for page in (ROOT / slug).glob("*.html")
+    )
     for page in pages:
         apply_canonical(page)
 
     urls = [BASE]
     for slug in sorted(public):
-        if (ROOT / "recursos" / slug / "index.html").exists():
-            urls.append(f"{BASE}recursos/{slug}/")
+        if (ROOT / slug / "index.html").exists():
+            urls.append(f"{BASE}{slug}/")
 
     (ROOT / "sitemap.xml").write_text(build_sitemap(urls), encoding="utf-8", newline="\n")
     (ROOT / "robots.txt").write_text(

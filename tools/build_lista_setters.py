@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOGO = ROOT / "assets" / "js" / "resources.js"
 SALIDA = ROOT / "output" / "lista-setters.tsv"
 SALIDA_ENLACES = ROOT / "output" / "lista-setters-enlaces.tsv"
-BASE = "https://recursos.tradinverso.com/recursos/"
+BASE = "https://recursos.tradinverso.com/"
 
 CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Formato", "Enlace"]
 
