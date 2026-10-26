@@ -2,122 +2,127 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://recursos.tradinverso.com/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/amd/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/amd-ifvg/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/backtesting-orb/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/checklist-entrada-mercado/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/claridad-trader/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/data-tradinverso/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/estrategias-tradinverso/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/guia-5-conceptos-trading/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/ifvg/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/judas-swing/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/manipulacion-maximos-minimos/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/mechas-velas/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/metodo-c3/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/modelo-liquidez-estructura-fvg/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/orb-nasdaq/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/orb-temporalidades/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/plan-trader-rentable/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/programa-tradinverso/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/protocolo-mental-trader/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/rango-asiatico/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/test-objetividad-sistema/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/tipos-fair-value-gap/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recursos.tradinverso.com/vela-diaria-anterior/</loc>
-    <lastmod>2026-10-17</lastmod>
+    <lastmod>2026-10-26</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://recursos.tradinverso.com/volume-profile/</loc>
+    <lastmod>2026-10-26</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

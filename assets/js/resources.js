@@ -70,6 +70,16 @@ window.TRADINVERSO_RESOURCES = [
     featured: true
   },
   {
+    slug: "volume-profile",
+    title: "Volume Profile: montañas y valles",
+    description: "Dónde se frena el precio, dónde corre y cómo usamos el SVP en Nasdaq con el POC, el VAH y el VAL.",
+    symbol: "VP",
+    type: "Guía + modelo",
+    category: "operativas",
+    search: "volume profile volumen perfil svp session volume profile poc vah val area de valor nodo alto bajo volumen hvn lvn montañas valles nasdaq futuros 15 minutos tradingview",
+    cta: "Abrir recurso"
+  },
+  {
     slug: "vela-diaria-anterior",
     title: "El modelo de la vela diaria",
     description: "Máximo, mínimo y 50% de la vela de ayer: qué lado buscar hoy, dónde está el objetivo y cuándo no operar.",

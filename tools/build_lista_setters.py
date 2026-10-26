@@ -26,6 +26,7 @@ CABECERA = ["Recurso", "Qué dolor aborda", "Qué solución da", "Formato", "Enl
 
 # Qué recibe el lead al registrarse. Comprobado contra el formulario de cada página.
 FORMATOS = {
+    "volume-profile": "Guía PDF",
     "vela-diaria-anterior": "Guía PDF",
     "orb-temporalidades": "Vídeo + guía PDF",
     "judas-swing": "Vídeo + guía PDF",
@@ -74,6 +75,10 @@ ENLACES_CLAVE = [
 
 # slug: (dolor del lead, lo que se lleva)
 TEXTOS = {
+    "volume-profile": (
+        "Mira la acción del precio y entra en largo o en corto justo donde el mercado se frena y se queda atrapado; no sabe dónde reacciona el precio ni hasta dónde puede correr.",
+        "Le explica el Volume Profile como montañas (el precio se frena) y valles (el precio corre), el POC, el VAH y el VAL, y cómo usamos el SVP diario en Nasdaq en 15 minutos con su configuración exacta. Guía en PDF con checklist.",
+    ),
     "vela-diaria-anterior": (
         "Opera sin un plan claro para el día: no sabe si buscar compras o ventas, ni hasta dónde llevar la operación.",
         "Le da un modelo sencillo con la vela diaria anterior: máximo, mínimo y 50%. Le dice qué lado buscar, que el 50% es el primer objetivo y cuándo no operar. Guía en PDF con compra, venta y checklist.",
